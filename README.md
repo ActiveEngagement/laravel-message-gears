@@ -2,6 +2,21 @@
 
 This is an API wrapper for MessageGears specifically for Laravel. This package providers a fluent syntax for sending MessageGears requests and notifications in Laravel.
 
+## Laravel Notification
+
+``` php
+use Actengage\LaravelMessageGears\SendTransactionalCampaign;
+
+$user = new User();
+$user->email = 'test@test.com';
+$user->save();
+$user->notify(new SendTransactionalCampaign([
+    'accountId' => 'ACCOUNT_ID',
+    'apiKey' => 'API_KEY',
+    'campaignId' => 'CAMPAIGN_ID'
+));
+```
+
 ## Submit Transactional Campaign
 
 Arrays will be cast into a fluent message builder.
