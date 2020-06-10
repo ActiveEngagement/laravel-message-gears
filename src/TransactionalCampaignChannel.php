@@ -17,10 +17,14 @@ class TransactionalCampaignChannel
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toTransactionalCampaign($notifiable);
-
+        
         if(!$message instanceof TransactionalCampaignMessage) {
             throw new InvalidTransactionalCampaignMesssage();
         }
+        
+        $message->recipient(
+            $notifiable->routeNotificationFor('transactional_campaign', $notification) ?: $notifiable->email
+        );
 
         app('messagegears')->submitTransactionalCampaign($message);
     }

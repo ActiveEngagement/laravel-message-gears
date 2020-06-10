@@ -34,7 +34,7 @@ class SendTransactionalCampaign extends Notification
     {
         return [TransactionalCampaignChannel::class];
     }
-
+    
     /**
      * Cast the notification as a transaction campaign message.
      *

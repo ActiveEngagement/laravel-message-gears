@@ -240,8 +240,11 @@ class TransactionalCampaignMessage implements Arrayable, Requestable, Xmlable {
         else if($recipient instanceof User) {
             $this->recipient = new Recipient($recipient->toArray());
         }
-        else {
+        else if($recipient) {
             $this->recipient = new Recipient($recipient);
+        }
+        else {
+            $this->recipient = null;
         }
 
         return $this;

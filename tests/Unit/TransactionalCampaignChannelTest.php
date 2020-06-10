@@ -20,9 +20,7 @@ class TransactionalCampaignChannelTest extends TestCase
         $user = new User();
         $user->id = 1;
         $user->email = 'test@test.com';
-        $user->notify(new SendTransactionalCampaign([
-            'email' => 'overridden@test.com'
-        ]));
+        $user->notify(new SendTransactionalCampaign);
 
         Notification::assertSentTo($user, SendTransactionalCampaign::class);
     }
