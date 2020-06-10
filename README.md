@@ -10,7 +10,6 @@ Define the MessageGears config in the `config/services.php` file. Any value here
 // config/services.php
 
 return [
-    ...,
     'messagesgears' => [
         'api_key' => '...',
         'account_id' => '...',
@@ -65,7 +64,7 @@ app('messagegears')->submitTransactionalCampaign($message)
 
 ## Custom Notifications
 
-This is an example of notification. The `toTransactionalCampaign` campaign
+This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\LaravelMessageGears\TransactionalCampaignMessage`.
 
 ``` php
 <?php
