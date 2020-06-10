@@ -2,6 +2,8 @@
 
 This is an API wrapper for MessageGears specifically for Laravel. This package providers a fluent syntax for sending MessageGears requests and notifications in Laravel.
 
+    composer require actengage/laravel-message-gears
+
 ## Config
 
 Define the MessageGears config in the `config/services.php` file. Any value here is considered the global default and can be overriden on a per-request basis.
