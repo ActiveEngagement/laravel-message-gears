@@ -124,12 +124,14 @@ class MessageGears {
         if(!$message instanceof TransactionalCampaignMessage) {
             $message = new TransactionalCampaignMessage($message);
         }
-
-        $request = $message->toRequest([
-            'AccountId' => $this->accountId,
-            'ApiKey' => $this->apiKey,
-            'CampaignId' => $this->campaignId,
+        
+        $message->defaults([
+            'apiKey' => $this->apiKey,
+            'accountId' => $this->accountId,
+            'campaignId' => $this->campaignId,
         ]);
+
+        $request = $message->toRequest();
 
         return $this->client->send($request);
     }

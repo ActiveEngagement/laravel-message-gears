@@ -59,13 +59,13 @@ trait XmlRequest {
      * @param  array  $query
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function toRequest(array $query = [])
+    public function toRequest(array $params = null)
     {
         if(!$this->recipient) {
             throw new MissingRecipient('The `recipient` is required.');
         }
 
-        return new Request('GET', $this->getRequestUri($query));
+        return new Request('GET', $this->getRequestUri());
     }
 
 }

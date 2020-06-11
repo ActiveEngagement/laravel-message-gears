@@ -35,9 +35,6 @@ class ServiceProviderTest extends TestCase
         app('messagegears')->mock($mock);
         
         $response = app('messagegears')->submitTransactionalCampaign([
-            'accountId' => 'ACCOUNT_ID',
-            'apiKey' => 'API_KEY',
-            'campaignId' => 'CAMPAIGN_ID',
             'recipient' => [
                 'email' => 'test@test.com'
             ]

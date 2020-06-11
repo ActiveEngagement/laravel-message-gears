@@ -4,6 +4,8 @@ namespace Actengage\LaravelMessageGears;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class TransactionalCampaignMessage implements Arrayable, Requestable, Xmlable {
     
@@ -80,38 +82,85 @@ class TransactionalCampaignMessage implements Arrayable, Requestable, Xmlable {
     public function __construct(array $params = [])
     {
         $this->context = new Context;
-
-        foreach($params as $key => $value) {
-            if(method_exists($this, $key)) {
-                $this->$key($value);
-            }
-            else if(property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
+        $this->set($params);
     }
 
     /**
-     * Set the account id of the notification.
+     * Set the message properties.
      *
-     * @param  string  $accountId
+     * @param  string|array  $params
+     * @param  mixed  $value
      * @return $this
      */
-    public function accountId($accountId)
+    public function get($key, $default = null) {
+        return Arr::get($this->toArray(), $key, $default);
+    }
+
+    public function defaults(array $default)
     {
+        return (new Collection($default))
+            ->each(function($value, $key) {
+                if(is_null($this->$key)) {
+                    $this->$key = $value;
+                }
+            });
+    }
+
+    /**
+     * Set the message properties.
+     *
+     * @param  string|array  $params
+     * @param  mixed  $value
+     * @return $this
+     */
+    public function set($params, $value = null)
+    {
+        if(is_array($params)) {  
+            foreach($params as $key => $value) {
+                $this->set($key, $value);
+            }
+        }
+        else {
+            if(method_exists($this, $params)) {
+                $this->$params($value);
+            }
+            else if(property_exists($this, $params)) {
+                $this->$params = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get/set the account id of the notification.
+     *
+     * @param  string  $accountId
+     * @return mixed
+     */
+    public function accountId($accountId = null)
+    {
+        if(is_null($accountId)) {
+            return $this->accountId;
+        }
+
         $this->accountId = $accountId;
 
         return $this;
     }
 
     /**
-     * Set the api key of the notification.
+     * Get/set the api key of the notification.
      *
      * @param  string  $apiKey
      * @return $this
      */
-    public function apiKey($apiKey)
+    public function apiKey($apiKey = null)
     {
+        if(is_null($apiKey)) {
+            return $this->apiKey;
+        }
+
         $this->apiKey = $apiKey;
 
         return $this;
@@ -139,13 +188,17 @@ class TransactionalCampaignMessage implements Arrayable, Requestable, Xmlable {
     }
 
     /**
-     * Add multiple attachments to the notification.
+     * Get/add multiple attachments to the notification.
      *
      * @param  array  $attachments
      * @return $this
      */
-    public function attachments(array $attachments)
+    public function attachments(array $attachments = null)
     {
+        if(is_null($attachments)) {
+            return $this->attachments;
+        }
+
         foreach($attachments as $attachment) {
             $this->attachment(...$attachment);
         }
@@ -154,26 +207,34 @@ class TransactionalCampaignMessage implements Arrayable, Requestable, Xmlable {
     }
 
     /**
-     * Set the campaign id of the notification.
+     * Get/set the campaign id of the notification.
      *
      * @param  string  $campaignId
      * @return $this
      */
-    public function campaignId($campaignId)
+    public function campaignId($campaignId = null)
     {
+        if(is_null($campaignId)) {
+            return $this->campaignId;
+        }
+
         $this->campaignId = $campaignId;
 
         return $this;
     }
 
     /**
-     * Merge the array into the notification context.
+     * Get/merge the array into the notification context.
      *
      * @param  string|array  $context
      * @return $this
      */
-    public function context($context, $value = null)
+    public function context($context = null, $value = null)
     {
+        if(is_null($context)) {
+            return $this->context;
+        }
+
         if(is_array($context)) {
             $this->context->merge($context);
         }
