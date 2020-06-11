@@ -2,10 +2,14 @@
 
 namespace Actengage\LaravelMessageGears;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class SendTransactionalCampaign extends Notification
+class SendTransactionalCampaign extends Notification implements ShouldQueue
 {
+    use Queueable;
+    
     /**
      * The notification params.
      *
