@@ -86,4 +86,23 @@ class TransactionalCampaignMessageTest extends TestCase
 
         $this->assertEquals($query, $request->getUri()->getQuery());
     }
+
+    public function testContextIsBeingPassed()
+    {
+        $message = new TransactionalCampaignMessage([
+            'context' => [
+                'a' => [
+                    'a' => 1
+                ],
+                'a.b' => 2
+            ]
+        ]);
+        
+        $this->assertEquals([
+            'a' => [
+                'a' => 1,
+                'b' => 2
+            ]
+        ], $message->context()->toArray());
+    }
 }
