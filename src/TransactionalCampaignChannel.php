@@ -2,7 +2,8 @@
 
 namespace Actengage\LaravelMessageGears;
 
-use Actengage\LaravelMessageGears\Exceptions\InvalidTransactionalCampaignMesssage;
+use Actengage\LaravelMessageGears\Exceptions\InvalidTransactionalCampaignSubmit;
+use Actengage\LaravelMessageGears\Messages\TransactionalCampaignSubmit;
 use Illuminate\Notifications\Notification;
 
 class TransactionalCampaignChannel
@@ -18,8 +19,8 @@ class TransactionalCampaignChannel
     {
         $message = $notification->toTransactionalCampaign($notifiable);
         
-        if(!$message instanceof TransactionalCampaignMessage) {
-            throw new InvalidTransactionalCampaignMesssage();
+        if(!$message instanceof TransactionalCampaignSubmit) {
+            throw new InvalidTransactionalCampaignSubmit();
         }
         
         $message->recipient(

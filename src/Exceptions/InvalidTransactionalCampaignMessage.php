@@ -5,6 +5,6 @@ namespace Actengage\LaravelMessageGears\Exceptions;
 
 use RuntimeException;
 
-class InvalidTransactionalCampaignMesssage extends RuntimeException {
+class InvalidTransactionalCampaignSubmit extends RuntimeException {
     //
 }

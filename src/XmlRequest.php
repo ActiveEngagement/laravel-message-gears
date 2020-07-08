@@ -2,9 +2,7 @@
 
 namespace Actengage\LaravelMessageGears;
 
-use Actengage\LaravelMessageGears\Exceptions\MissingRecipient;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Str;
 
 trait XmlRequest {
 
@@ -61,10 +59,6 @@ trait XmlRequest {
      */
     public function toRequest(array $params = null)
     {
-        if(!$this->recipient) {
-            throw new MissingRecipient('The `recipient` is required.');
-        }
-
         return new Request('GET', $this->getRequestUri());
     }
 

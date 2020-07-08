@@ -7,8 +7,8 @@ interface Requestable {
     /**
      * Cast the object into a request.
      * 
-     * @return \GuzzleHttp\Psr7\Request;
+     * @return \GuzzleHttp\Psr7\Request
      */
-    public function toRequest();
+    public function send();
 
 }

@@ -1,7 +1,9 @@
 <?php
 
-namespace Actengage\LaravelMessageGears;
+namespace Actengage\LaravelMessageGears\Notifications;
 
+use Actengage\LaravelMessageGears\Exceptions\MissingRecipient;
+use Actengage\LaravelMessageGears\Messages\TransactionalCampaignSubmit;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -36,17 +38,27 @@ class SendTransactionalCampaign extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [TransactionalCampaignChannel::class];
+        return [MessageGearsChannel::class];
     }
     
     /**
      * Cast the notification as a transaction campaign message.
      *
      * @param  array  $params
-     * @return void
+     * @return \Actengage\LaravelMessageGears\TransactionalCampaignSubmit;
      */
-    public function toTransactionalCampaign($notifiable)
+    public function toMessageGears($notifiable)
     {
-        return new TransactionalCampaignMessage($this->params);
+        $message = new TransactionalCampaignSubmit($this->params);
+        
+        $email = $notifiable->routeNotificationFor('message_gears', $this);
+        
+        $message->recipient($email ?: $notifiable->email);
+
+        if(!$message->recipient) {
+            throw new MissingRecipient('The message has no recipient.');
+        }
+
+        return $message;
     }
 }

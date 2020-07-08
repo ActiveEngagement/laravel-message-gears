@@ -25,7 +25,7 @@ return [
 Using the default notification is simple. Instantiate the notification and pass the parameters. Any parameters will override global or defaults values.
 
 ``` php
-use Actengage\LaravelMessageGears\SendTransactionalCampaign;
+use Actengage\LaravelMessageGears\Notifications\SendTransactionalCampaign;
 
 $user = new User();
 $user->email = 'test@test.com';
@@ -53,9 +53,9 @@ app('messagegears')->submitTransactionCampaign([
 You can also instantiate the fluent message builder and send the message directly. 
 
 ``` php
-use Actengage\LaravelMessageGears\TransactionalCampaignMessage;
+use Actengage\LaravelMessageGears\TransactionalCampaignSubmit;
 
-$message = (new TransactionalCampaignMessage)
+$message = (new TransactionalCampaignSubmit)
     ->accountId(1)
     ->apiKey('API_KEY')
     ->to('test@test.com')
@@ -66,14 +66,16 @@ app('messagegears')->submitTransactionalCampaign($message)
 
 ## Custom Notifications
 
-This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\LaravelMessageGears\TransactionalCampaignMessage`.
+This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\LaravelMessageGears\TransactionalCampaignSubmit`.
 
 ``` php
 <?php
 
+namespace Actengage\LaravelMessageGears\Notifications;
+
 use Illuminate\Notifications\Notification;
 use Actengage\LaravelMessageGears\TransactionalCampaignChannel;
-use Actengage\LaravelMessageGears\TransactionalCampaignMessage;
+use Actengage\LaravelMessageGears\Messages\TransactionalCampaignSubmit;
 
 class SendTransactionalCampaign extends Notification
 {
@@ -110,11 +112,11 @@ class SendTransactionalCampaign extends Notification
      * Cast the notification as a transactional campaign message.
      *
      * @param  array  $params
-     * @return \Actengage\LaravelMessageGears\TransactionalCampaignMessage
+     * @return \Actengage\LaravelMessageGears\TransactionalCampaignSubmit
      */
     public function toTransactionalCampaign($notifiable)
     {
-        return new TransactionalCampaignMessage($this->params);
+        return new TransactionalCampaignSubmit($this->params);
     }
 }
 ```

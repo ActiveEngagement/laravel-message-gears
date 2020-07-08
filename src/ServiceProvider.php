@@ -2,6 +2,9 @@
 
 namespace Actengage\LaravelMessageGears;
 
+use Actengage\LaravelMessageGears\Api\Accelerator;
+use Actengage\LaravelMessageGears\Api\Cloud;
+
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
@@ -11,10 +14,35 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(MessageGears::class, function ($app) {
-            return new MessageGears(config('services.messagegears'));
+        $this->registerCloudApi();
+        $this->registerAcceleratorApi();
+    }
+
+    /**
+     * Register the Cloud API.
+     *
+     * @return void
+     */
+    public function registerCloudApi()
+    {
+        $this->app->singleton(Cloud::class, function ($app) {
+            return new Cloud(config('services.mg', config('services.messagegears')));
         });
 
-        $this->app->alias(MessageGears::class, 'messagegears');
+        $this->app->alias(Cloud::class, 'mg.api.cloud');
+    }
+
+    /**
+     * Register the Accelerator API.
+     *
+     * @return void
+     */
+    public function registerAcceleratorApi()
+    {
+        $this->app->singleton(Accelerator::class, function ($app) {
+            return new Accelerator(config('services.mg', config('services.messagegears')));
+        });
+
+        $this->app->alias(Accelerator::class, 'mg.api.accelerator');
     }
 }

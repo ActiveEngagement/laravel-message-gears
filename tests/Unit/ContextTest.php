@@ -22,7 +22,9 @@ class ContextTest extends TestCase
             'c' =>  3
         ]));
 
-        $xml = '<object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test>';
+$xml = 
+'<?xml version="1.0"?>
+<ContextData><object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test></ContextData>';
         
         $this->assertEquals($xml, $context->toXml()->toString());
     }

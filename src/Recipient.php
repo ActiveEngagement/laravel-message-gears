@@ -107,10 +107,10 @@ class Recipient implements Arrayable, Xmlable {
      */
     public function toArray()
     {
-        $values = Arr::studlyKeys(array_filter([
-            'emailAddress' => $this->emailAddress,
-            'recipientId' => $this->recipientId,
-        ]));
+        $values = array_filter([
+            'EmailAddress' => $this->emailAddress,
+            'RecipientId' => $this->recipientId,
+        ]);
 
         return array_merge($values, $this->meta);
     }

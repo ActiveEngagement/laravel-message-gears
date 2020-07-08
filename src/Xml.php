@@ -17,7 +17,7 @@ class Xml extends SimpleXMLElement {
             return null;
         }
         
-        return trim(preg_replace('/<\\?xml.+>\\n(<root>(.+)<\/root>)?/', '$2', $this->asXML()));
+        return trim(preg_replace('/(<\\?xml.+>\\n)(<root>(.+)<\/root>)?/', '$1$3', $this->asXML()));
     }
 
     public static function fromArray(Array $data, Xml $parent = null, $parentKey = null)

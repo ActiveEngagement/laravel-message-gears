@@ -75,7 +75,8 @@ class RecipientTest extends TestCase
             ]
         ]);
         
-        $xml = '<Recipient><EmailAddress>test@test.com</EmailAddress><total>500</total><times><start>2020-12-31 23:59:59</start><end>2021-12-31 23:59:59</end></times><status><coming>true</coming><on_time>false</on_time></status><customer><first>John</first><total>100</total></customer><customer><first>Jane</first><total>75</total></customer></Recipient>';
+$xml = '<?xml version="1.0"?>
+<Recipient><EmailAddress>test@test.com</EmailAddress><total>500</total><times><start>2020-12-31 23:59:59</start><end>2021-12-31 23:59:59</end></times><status><coming>true</coming><on_time>false</on_time></status><customer><first>John</first><total>100</total></customer><customer><first>Jane</first><total>75</total></customer></Recipient>';
 
         $this->assertEquals($xml, $recipient->toXml()->toString());
     }
