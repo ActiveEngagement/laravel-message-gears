@@ -22,7 +22,7 @@ trait HasAccount {
      * Get/set the account id of the notification.
      *
      * @param  string  $accountId
-     * @return mixed
+     * @return mixed|static
      */
     public function accountId($accountId = null)
     {
@@ -39,7 +39,7 @@ trait HasAccount {
      * Get/set the api key of the notification.
      *
      * @param  string  $apiKey
-     * @return mixed
+     * @return mixed|static
      */
     public function apiKey($apiKey = null)
     {

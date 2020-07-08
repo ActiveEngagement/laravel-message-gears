@@ -2,25 +2,15 @@
 
 namespace Actengage\LaravelMessageGears\Api;
 
+use Actengage\LaravelMessageGears\Concerns\HasAccount;
+use Actengage\LaravelMessageGears\Concerns\HasCampaign;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Arr;
 
 abstract class Base {
-
-    /**
-     * The api key.
-     * 
-     * @var string
-     */
-    protected $apiKey;
-
-    /**
-     * The account id.
-     * 
-     * @var string
-     */
-    protected $accountId;
+    
+    use HasAccount, HasCampaign;
 
     /**
      * The global Guzzle client.
@@ -40,37 +30,41 @@ abstract class Base {
 
         $this->apiKey = Arr::get($config, 'api_key');
         $this->accountId = Arr::get($config, 'account_id');
-        $this->client = $this->client(Arr::get($config, 'http_client'));
+        $this->campaignId = Arr::get($config, 'campaign_id');
+        $this->campaignVersion = Arr::get($config, 'campaign_version');
+        $this->client = $this->client(Arr::get($config, 'client'));
     }
 
     /**
-     * Get the api key.
+     * Get/set the api key.
      * 
      * @return string
      */
-    public function apiKey()
+    public function apiKey($apiKey = null)
     {
-        return $this->apiKey;
+        if(is_null($apiKey)){
+            return $this->apiKey;
+        }
+
+        $this->apiKey = $apiKey;
+
+        return $this;
     }
 
     /**
-     * Get the account id.
+     * Get/set the account id.
      * 
      * @return string
      */
-    public function accountId()
+    public function accountId($accountId = null)
     {
-        return $this->accountId;
-    }
+        if(is_null($accountId)){
+            return $this->accountId;
+        }
 
-    /**
-     * Get the default request headers.
-     * 
-     * @return array
-     */
-    public function headers()
-    {
-        return [];
+        $this->accountId = $accountId;
+
+        return $this;
     }
     
     /**
@@ -79,20 +73,26 @@ abstract class Base {
      * @param  array  $client
      * @return \GuzzleHttp\Client
      */
-    public function client(array $params = null): Client
+    public function client($config = null): Client
     {
-        if(!$this->client || $params) {
-            $this->client = new Client(array_merge([
-                'base_uri' => $this->baseUri(),
-                'headers' => array_filter(array_merge([
-                    'Accept' => 'application/json',
-                ], $this->headers()))
-            ], ($params ?: [])));
+        $mergedConfig = array_merge([
+            'base_uri' => $this->baseUri(),
+            'headers' => array_merge([
+                'Accept' => 'application/json',
+            ], array_filter($this->headers())) 
+        ], (
+            $this->client ? $this->client->getConfig() : []
+        ), (
+            is_array($config) ? $config : []
+        ));
+
+        if(!$this->client || $config) {
+            $this->client = new Client($mergedConfig);
         }
 
         return $this->client;
     }
-    
+        
     /**
      * Send an HTTP request.
      * 
@@ -173,4 +173,11 @@ abstract class Base {
      * @return string
      */
     abstract public function baseUri();
+
+    /**
+     * Get the default request headers.
+     * 
+     * @return array
+     */
+    abstract public function headers();
 }

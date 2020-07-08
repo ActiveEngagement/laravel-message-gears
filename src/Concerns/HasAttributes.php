@@ -2,9 +2,7 @@
 
 namespace Actengage\LaravelMessageGears\Concerns;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 
 trait HasAttributes {
     
@@ -13,10 +11,16 @@ trait HasAttributes {
      *
      * @param  string|array  $params
      * @param  mixed  $value
-     * @return $this
+     * @return mixed
      */
     public function get($key, $default = null) {
-        return Arr::get($this->toArray(), $key, $default);
+        foreach([$key, Str::camel($key)] as $key) {
+            if(property_exists($this, $key)) {
+                return !is_null($this->$key) ? $this->$key : $default;
+            }
+        }
+        
+        return $default;
     }
 
     /**
@@ -24,7 +28,7 @@ trait HasAttributes {
      *
      * @param  string|array  $params
      * @param  mixed  $value
-     * @return $this
+     * @return static
      */
     public function set($params, $value = null)
     {
@@ -34,35 +38,17 @@ trait HasAttributes {
             }
         }
         else {
-            if(method_exists($this, $params)) {
-                $this->$params($value);
-            }
-            else if(property_exists($this, $params)) {
-                $this->$params = $value;
-            }
-            else if(property_exists($this, $params = Str::camel($params))) {
-                $this->$params = $value;
+            foreach([$params, Str::camel($params)] as $key) {
+                if(method_exists($this, $key)) {
+                    $this->$key($value);
+                }
+                else if(property_exists($this, $key)) {
+                    $this->$key = $value;
+                }
             }
         }
 
         return $this;
-    }
-
-    /**
-     * Set the default message properties.
-     *
-     * @param  string|array  $params
-     * @param  mixed  $value
-     * @return $this
-     */
-    public function defaults(array $default)
-    {
-        return (new Collection($default))
-            ->each(function($value, $param) {
-                if(is_null($this->$param)) {
-                    $this->set($param, $value);
-                }
-            });
     }
 
 }

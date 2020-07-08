@@ -27,6 +27,7 @@ class RecipientTest extends TestCase
         $this->assertEquals(123, $recipient->recipientId);
         $this->assertEquals('test@test.com', $recipient->emailAddress);
         $this->assertEquals(123, $recipient->test_name);
+        $this->assertNull($recipient->nonExistentKey);
 
         $recipient->id(456)->email('test2@test.com')->meta('test_name', 456);
 

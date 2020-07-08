@@ -1,4 +1,3 @@
-
 <?php
 
 namespace Actengage\LaravelMessageGears\Exceptions;

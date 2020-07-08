@@ -22,7 +22,7 @@ trait HasCampaign {
      * Get/set the campaign id.
      *
      * @param  string  $campaignId
-     * @return mixed
+     * @return mixed|static
      */
     public function campaignId(string $campaignId = null)
     {
@@ -39,7 +39,7 @@ trait HasCampaign {
      * Get/set the campaign version.
      *
      * @param  string  $campaignId
-     * @return mixed
+     * @return mixed|static
      */
     public function campaignVersion(string $campaignVersion = null)
     {
