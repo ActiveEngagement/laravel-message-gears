@@ -2,11 +2,11 @@
 
 namespace Actengage\LaravelMessageGears\Unit;
 
+use Actengage\LaravelMessageGears\Exceptions\MissingCampaignId;
 use Actengage\LaravelMessageGears\Messages\TransactionalCampaignSubmit;
 use Actengage\LaravelMessageGears\Recipient;
 use Actengage\LaravelMessageGears\Tests\TestCase;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
 class TransactionalCampaignSubmitTest extends TestCase
@@ -18,40 +18,19 @@ class TransactionalCampaignSubmitTest extends TestCase
      */
     public function testMessageCanBeCreated()
     {
-        $message = new TransactionalCampaignSubmit([
-            'accountId' => 1,
-            'apiKey' => 123,
-            'context' => [ 
-                'a' => 1
-            ]
-        ]);
-
-        $message->campaignVersion(1);
-
-        $this->assertEquals(1, $message->campaignVersion);
-
-        $this->assertEquals([
-            'a' => 1
-        ], $message->context()->toArray());
-
-        $this->assertEquals(1, $message->accountId);
-        $this->assertEquals(123, $message->apiKey);
-
-        $message->context([
-            'b' => 2,
-            'c' => 3
-        ]);
+        $message = new TransactionalCampaignSubmit;
         
-        $message->context([
-            'd' => 4
-        ]);
+        $message->correlationId(1);
 
-        $this->assertEquals([
-            'a' => 1,
-            'b' => 2,
-            'c' => 3,
-            'd' => 4
-        ], $message->context->toArray());
+        $this->assertEquals(1, $message->correlationId());
+
+        $message->latestSendTime($now = now());
+
+        $this->assertEquals($now, $message->latestSendTime());
+
+        $message->notificationEmailAddress('test@test.com');
+
+        $this->assertEquals('test@test.com', $message->notificationEmailAddress());
 
         $message->recipient([
             'email' => 'test@test.com',
@@ -70,6 +49,10 @@ class TransactionalCampaignSubmitTest extends TestCase
     public function testCanSendTransactionalCampaign()
     {
         $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], json_encode($body = [
                 'requestId' => '02-b18123-12fe6438a10daaa7ce44a8fff4e894a'
             ]))
@@ -90,7 +73,7 @@ class TransactionalCampaignSubmitTest extends TestCase
 
         $xml = '<?xml version="1.0"?><Recipient><EmailAddress>test@test.com</EmailAddress></Recipient>';
 
-        $this->assertEquals($xml, str_replace("\n", '', $message->toArray()['recipient']));
+        $this->assertEquals($xml, str_replace("\n", '', (string) $message->recipient->toXml()));
 
         $context = '<?xml version="1.0"?><ContextData><test>123</test></ContextData>';
 
@@ -102,4 +85,23 @@ class TransactionalCampaignSubmitTest extends TestCase
         $this->assertEquals($body, json_decode($response->getBody(), true));
     }
 
+
+    /**
+     * Test that a TransactionalCampaignSubmit can be sent.
+     * 
+     * @return void
+     */
+    public function testCantSendMessageWithoutCampaignId()
+    {
+        $this->expectException(MissingCampaignId::class);
+
+        $message = new TransactionalCampaignSubmit([
+            'recipient' => [
+                'email' => 'test@test.com'
+            ]
+        ]);
+
+        $message->campaignId = null;
+        $message->send();
+    }
 }

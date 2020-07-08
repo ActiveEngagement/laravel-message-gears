@@ -66,9 +66,9 @@ class Recipient implements Arrayable, Xmlable {
      * Set the email address of the recipient.
      *
      * @param  string  $emailAddress
-     * @return $this
+     * @return static
      */
-    public function email($emailAddress)
+    public function email(string $emailAddress)
     {
         $this->emailAddress = $emailAddress;
 
@@ -79,9 +79,9 @@ class Recipient implements Arrayable, Xmlable {
      * Set the id of the recipient.
      *
      * @param  string  $id
-     * @return $this
+     * @return static
      */
-    public function id($recipientId)
+    public function id(string $recipientId)
     {
         $this->recipientId = $recipientId;
 
@@ -91,7 +91,7 @@ class Recipient implements Arrayable, Xmlable {
     /**
      * Sets the meta key/value pair.
      *
-     * @return $this
+     * @return static
      */
     public function meta($key, $value)
     {

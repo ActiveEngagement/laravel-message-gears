@@ -11,7 +11,7 @@ class Context extends Repository implements Arrayable, Xmlable {
      * Merge an array into the context.
      * 
      * @param  array  $items
-     * @return $this
+     * @return static
      */
     public function merge(array $items)
     {

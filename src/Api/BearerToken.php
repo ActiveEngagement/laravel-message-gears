@@ -71,7 +71,7 @@ class BearerToken {
     public static function response(Response $response)
     {
         $body = json_decode($response->getBody());
-            
-        return new BearerToken($body->token, Carbon::make($body->expiresAt));
+
+        return new BearerToken($body->token, Carbon::make($body->expirationDate));
     }
 }

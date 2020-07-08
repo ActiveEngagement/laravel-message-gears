@@ -40,7 +40,7 @@ class BearerTokenTest extends TestCase
     public function testBearerFromResponse()
     {
         $response = new Response(200, [], json_encode([
-            'expiresAt' => now()->addMinute(),
+            'expirationDate' => now()->addMinute(),
             'token' => 'test'
         ]));
 

@@ -18,10 +18,16 @@ trait HasRecipient {
      * Set the email recipient of the notification.
      *
      * @param  mixed  $recipient
-     * @return $this
+     * @return mixed|static
      */
-    public function recipient($recipient)
+    public function recipient($recipient = null)
     {
+        // If the value is null, get the recipient property.
+        if(is_null($recipient)) {
+            return $this->recipient;
+        }
+
+        // Perform the setter routine
         if(is_callable($recipient)) {
             $this->recipient = $recipient(new Recipient());
         }
@@ -42,7 +48,7 @@ trait HasRecipient {
      * An alias for the recipient method.
      *
      * @param  string  $recipient
-     * @return $this
+     * @return static
      */
     public function to(...$args)
     {

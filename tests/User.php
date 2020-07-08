@@ -7,4 +7,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends AuthUser {
     use Notifiable;
+
+    protected $fillable = ['email'];
 }

@@ -45,7 +45,11 @@ class TransactionalCampaignSubmit extends Message {
     public function __construct(array $params = [])
     {
         $this->context(new Context)
-            ->set(config('services.mg', config('services.messagegears')))
+            ->set([
+                'accountId' => app('mg.api.cloud')->accountId(),
+                'apiKey' => app('mg.api.cloud')->apiKey(),
+                'campaignId' => app('mg.api.cloud')->campaignId(),
+            ])
             ->set($params);
     }
 
@@ -89,7 +93,7 @@ class TransactionalCampaignSubmit extends Message {
      * @param  string  $notificationEmailAddress
      * @return mixed
      */
-    public function notificationEmailAddress(string $notificationEmailAddress)
+    public function notificationEmailAddress(string $notificationEmailAddress = null)
     {
         if(is_null($notificationEmailAddress)) {
             return $this->notificationEmailAddress;
@@ -107,11 +111,11 @@ class TransactionalCampaignSubmit extends Message {
      */
     public function send()
     {
-        if(!$this->campaignId) {
+        if(is_null($this->campaignId)) {
             throw new MissingCampaignId;
         }
 
-        $uri = 'campaign/transaction/' . $this->campaignId;
+        $uri = 'campaign/transactional/' . $this->campaignId;
 
         return app('mg.api.cloud')->post($uri, [
             'json' => array_filter($this->toArray())
