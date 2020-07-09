@@ -75,7 +75,7 @@ class TransactionalCampaignSubmitTest extends TestCase
 
         $this->assertEquals($xml, str_replace("\n", '', (string) $message->recipient->toXml()));
 
-        $context = '<?xml version="1.0"?><ContextData><test>123</test></ContextData>';
+        $context = '<?xml version="1.0"?><test>123</test>';
 
         $this->assertEquals($context, str_replace("\n", '', $message->toArray()['context']));
 

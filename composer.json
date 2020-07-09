@@ -35,5 +35,8 @@
                 "Actengage\\LaravelMessageGears\\ServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

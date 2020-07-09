@@ -75,14 +75,14 @@ abstract class Base {
      */
     public function client($config = null): Client
     {
-        $mergedConfig = array_merge([
+        $mergedConfig = array_merge((
+            $this->client ? $this->client->getConfig() : []
+        ), [
             'base_uri' => $this->baseUri(),
             'headers' => array_merge([
                 'Accept' => 'application/json',
             ], array_filter($this->headers())) 
         ], (
-            $this->client ? $this->client->getConfig() : []
-        ), (
             is_array($config) ? $config : []
         ));
 

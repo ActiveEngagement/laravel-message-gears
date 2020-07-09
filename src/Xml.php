@@ -20,10 +20,17 @@ class Xml extends SimpleXMLElement {
         return trim(preg_replace('/(<\\?xml.+>\\n)(<root>(.+)<\/root>)?/', '$1$3', $this->asXML()));
     }
 
-    public static function fromArray(Array $data, Xml $parent = null, $parentKey = null)
+    public function addCData(CData $cdata)
+    {
+        $node = dom_import_simplexml($this);
+        $node->appendChild($node->ownerDocument->createCDATASection($cdata->data)); 
+        
+    }
+
+    public static function fromArray(array $data, Xml $parent = null, $parentKey = null)
     {
         if(!$parent instanceof Xml) { 
-            $parent = new static('<root />');
+            $parent = new static('<root />', LIBXML_NOCDATA);
         }
 
         foreach($data as $key => $value) {
@@ -31,6 +38,10 @@ class Xml extends SimpleXMLElement {
 
             if($value instanceof Arrayable) {
                 static::fromArray($value->toArray(), $parent->addChild($key));
+            }
+            else if($value instanceof CData) {
+                $child = $parent->addChild($key);
+                $child->addCData($value);
             }
             else if(is_array($value)) {
                 if(static::isAssociative($value)) {

@@ -39,9 +39,11 @@ class Arr extends BaseArr {
                 $value = $value->toArray();
             }
 
+            /*
             if(is_object($value)) {
-                $value = (array) $value;
+                $value = method_exists($value, '__toString' ) ? (string) $value : (array) $value;
             }
+            */
 
             if(is_array($value)) {
                 $return[$key] = static::toArray($value);
@@ -52,6 +54,13 @@ class Arr extends BaseArr {
         }
 
         return $return;
+    }
+
+    static public function castsToString($item)
+    {
+        return ( !is_array( $item ) ) &&
+        ( ( !is_object( $item ) && settype( $item, 'string' ) !== false ) ||
+        ( is_object( $item ) && method_exists( $item, '__toString' ) ) );
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Actengage\LaravelMessageGears\Unit;
 
+use Actengage\LaravelMessageGears\CData;
 use Actengage\LaravelMessageGears\Context;
 use Actengage\LaravelMessageGears\Tests\TestCase;
 use Illuminate\Support\Collection;
@@ -15,6 +16,8 @@ class ContextTest extends TestCase
     public function testNestedCollectedBeConvertedToXml()
     {
         $context = new Context;
+        $context->set('g', new CData('<test>123</test>'));
+        
         $context->set('object', (object) ['a' => 1]);
         $context->set('test.nested', new Collection([
             'loop' => new Collection([1, 2, 3]),
@@ -24,7 +27,7 @@ class ContextTest extends TestCase
 
 $xml = 
 '<?xml version="1.0"?>
-<ContextData><object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test></ContextData>';
+<g><![CDATA[<test>123</test>]]></g><object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test>';
         
         $this->assertEquals($xml, $context->toXml()->toString());
     }
