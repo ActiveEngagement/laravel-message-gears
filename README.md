@@ -1,5 +1,7 @@
 # MessageGears
 
+![PHP Composer](https://github.com/actengage/laravel-message-gears/workflows/PHP%20Composer/badge.svg)
+
 This is an API wrapper for MessageGears specifically for Laravel. This package providers a fluent syntax for sending MessageGears requests and notifications in Laravel.
 
     composer require actengage/laravel-message-gears
