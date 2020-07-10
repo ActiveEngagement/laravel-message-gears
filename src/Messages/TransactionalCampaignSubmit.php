@@ -9,10 +9,11 @@ use Actengage\LaravelMessageGears\Concerns\HasCampaign;
 use Actengage\LaravelMessageGears\Concerns\HasContext;
 use Actengage\LaravelMessageGears\Concerns\HasRecipient;
 use Actengage\LaravelMessageGears\Context;
+use Actengage\LaravelMessageGears\Contracts\HttpMessage;
 use Actengage\LaravelMessageGears\Exceptions\MissingCampaignId;
 use Carbon\Carbon;
 
-class TransactionalCampaignSubmit extends Message {
+class TransactionalCampaignSubmit extends Message implements HttpMessage {
     
     use HasAccount, HasAttributes, HasCampaign, HasContext, HasRecipient;
 
