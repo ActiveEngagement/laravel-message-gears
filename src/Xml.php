@@ -16,15 +16,16 @@ class Xml extends SimpleXMLElement {
         if(!count($this->children())) {
             return null;
         }
-        
-        return trim(preg_replace('/(<\\?xml.+>\\n)(<root>(.+)<\/root>)?/', '$1$3', $this->asXML()));
+
+        // return trim(preg_replace('/(<\\?xml.+>\\n)(<root>(.+)<\/root>)?/', '$1$3', $this->asXML()));
+
+        return $this->asXML();
     }
 
     public function addCData(CData $cdata)
     {
         $node = dom_import_simplexml($this);
-        $node->appendChild($node->ownerDocument->createCDATASection($cdata->data)); 
-        
+        $node->appendChild($node->ownerDocument->createCDATASection($cdata->data));    
     }
 
     public static function fromArray(array $data, Xml $parent = null, $parentKey = null)
