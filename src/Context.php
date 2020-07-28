@@ -39,6 +39,6 @@ class Context extends Repository implements Arrayable, Xmlable {
      */
     public function toXml()
     {
-        return Xml::fromArray($this->toArray());
+        return Xml::fromArray($this->toArray(), new Xml('<ContextData/>'));
     }
 }
