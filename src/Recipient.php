@@ -117,8 +117,6 @@ class Recipient implements Arrayable, Xmlable {
 
     public function toXml()
     {
-        return Xml::fromArray([
-            'Recipient' => $this->toArray()
-        ]);
+        return Xml::fromArray($this->toArray(), new Xml('<Recipient/>'));
     }
 }
