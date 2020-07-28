@@ -19,7 +19,7 @@ class XmlTest extends TestCase
         ]);
 
 $expected = '<?xml version="1.0"?>
-<test><0>1</0><1>2</1><2>3</2></test>';
+<root><test><0>1</0><1>2</1><2>3</2></test></root>';
 
         $this->assertEquals($expected, (string) $xml);
     }

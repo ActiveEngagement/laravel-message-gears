@@ -27,7 +27,7 @@ class ContextTest extends TestCase
 
 $xml = 
 '<?xml version="1.0"?>
-<g><![CDATA[<test>123</test>]]></g><object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test>';
+<ContextData><g><![CDATA[<test>123</test>]]></g><object><a>1</a></object><test><nested><loop>1</loop><loop>2</loop><loop>3</loop><b><d>1</d><e>2</e><f>3</f></b><c>3</c></nested></test></ContextData>';
         
         $this->assertEquals($xml, $context->toXml()->toString());
     }

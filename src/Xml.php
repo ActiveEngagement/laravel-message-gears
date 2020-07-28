@@ -19,7 +19,7 @@ class Xml extends SimpleXMLElement {
 
         // return trim(preg_replace('/(<\\?xml.+>\\n)(<root>(.+)<\/root>)?/', '$1$3', $this->asXML()));
 
-        return $this->asXML();
+        return trim($this->asXML());
     }
 
     public function addCData(CData $cdata)
