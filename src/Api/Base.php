@@ -10,14 +10,14 @@ use Illuminate\Support\Arr;
 
 abstract class Base {
     
-    use HasAccount, HasCampaign;
+    use HasAccount;
 
     /**
      * The global Guzzle client.
      * 
      * @var \GuzzleHttp\Client
      */
-    protected $client;
+    public $client;
 
     /**
      * The MessageGears constructor.
@@ -30,9 +30,10 @@ abstract class Base {
 
         $this->apiKey = Arr::get($config, 'api_key');
         $this->accountId = Arr::get($config, 'account_id');
-        $this->campaignId = Arr::get($config, 'campaign_id');
-        $this->campaignVersion = Arr::get($config, 'campaign_version');
-        $this->client = $this->client(Arr::get($config, 'client'));
+        // $this->campaignId = Arr::get($config, 'campaign_id');
+        // $this->campaignVersion = Arr::get($config, 'campaign_version');
+
+        $this->client(Arr::get($config, 'client'));
     }
 
     /**
@@ -47,6 +48,7 @@ abstract class Base {
         }
 
         $this->apiKey = $apiKey;
+        $this->client();
 
         return $this;
     }
@@ -63,6 +65,7 @@ abstract class Base {
         }
 
         $this->accountId = $accountId;
+        $this->client();
 
         return $this;
     }
@@ -85,12 +88,8 @@ abstract class Base {
         ], (
             is_array($config) ? $config : []
         ));
-
-        if(!$this->client || $config) {
-            $this->client = new Client($mergedConfig);
-        }
-
-        return $this->client;
+        
+        return $this->client = new Client($mergedConfig);
     }
         
     /**
@@ -115,7 +114,7 @@ abstract class Base {
      */
     public function get(string $uri, array $options = []): Response
     {
-        return $this->client->post($uri, $options);
+        return $this->client->get($uri, $options);
     }
     
     /**

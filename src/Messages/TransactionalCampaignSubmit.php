@@ -47,9 +47,9 @@ class TransactionalCampaignSubmit extends Message implements HttpMessage {
     {
         $this->context(new Context)
             ->set([
-                'accountId' => app('mg.api.cloud')->accountId(),
-                'apiKey' => app('mg.api.cloud')->apiKey(),
-                'campaignId' => app('mg.api.cloud')->campaignId(),
+                'accountId' => app('mg.api.cloud')->accountId,
+                'apiKey' => app('mg.api.cloud')->apiKey,
+                'campaignId' => app('mg.api.cloud')->campaignId,
             ])
             ->set($params);
     }

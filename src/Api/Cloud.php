@@ -3,9 +3,13 @@
 namespace Actengage\LaravelMessageGears\Api;
 
 use Actengage\LaravelMessageGears\Api\Base;
+use Actengage\LaravelMessageGears\Concerns\HasCampaign;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Arr;
 
 class Cloud extends Base {
+
+    use HasCampaign;
 
     /**
      * The authentication bearer.
@@ -13,6 +17,19 @@ class Cloud extends Base {
      * @var \Actengage\LaravelMessageGears\Api\BearerToken
      */
     protected $bearerToken;
+
+    /**
+     * The MessageGears constructor.
+     * 
+     * @return void
+     */
+    public function __construct(?array $config = null)
+    {
+        $this->campaignId = Arr::get($config, 'campaign_id');
+        $this->campaignVersion = Arr::get($config, 'campaign_version');
+        
+        parent::__construct($config);
+    }
 
     /**
      * Define the API base endpoint URI.
