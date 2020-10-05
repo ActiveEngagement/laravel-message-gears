@@ -2,6 +2,7 @@
 
 namespace Actengage\LaravelMessageGears\Unit;
 
+use Actengage\LaravelMessageGears\Api\BearerToken;
 use Actengage\LaravelMessageGears\Exceptions\InvalidTransactionalCampaignSubmit;
 use Actengage\LaravelMessageGears\Exceptions\MissingRecipient;
 use Actengage\LaravelMessageGears\MessageGearsChannel;
@@ -103,5 +104,33 @@ class MessageGearsChannelTest extends TestCase
 
         $channel = new MessageGearsChannel;
         $channel->send(new User(), $notification);
+    }
+
+    /**
+     * Test that an expired auth token is refreshed before the request is made.
+     * 
+     * @return void
+     */
+    public function testAuthBearerWithRefresh()
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'token' => '2',
+                'expirationDate' => now()->addMinute()
+            ])),
+            new Response(200, [], 'Success!'),
+        ]);
+
+        app('mg.api.cloud')->client([
+            'handler' => $mock
+        ]);
+        
+        // Create an expired token to simulate a post request.
+        app('mg.api.cloud')->bearerToken = new BearerToken('1', now()->subMinute());
+
+        $response = app('mg.api.cloud')->post('test');
+
+        $this->assertEquals('2', app('mg.api.cloud')->bearerToken);
+        $this->assertEquals('Success!', (string) $response->getBody());
     }
 }

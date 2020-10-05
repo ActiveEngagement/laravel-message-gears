@@ -19,10 +19,30 @@ class ServiceProviderTest extends TestCase
                 'expirationDate' => now()->addMinutes(15)
             ])),
             new Response(200, [], null),
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], null),
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], null),
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], null),
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], null),
+            new Response(200, [], json_encode([
+                'token' => 'test',
+                'expirationDate' => now()->addMinutes(15)
+            ])),
             new Response(200, [], null)
         ]);
 

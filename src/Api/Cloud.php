@@ -12,11 +12,18 @@ class Cloud extends Base {
     use HasCampaign;
 
     /**
+     * Override the default base uri.
+     * 
+     * @var string
+     */
+    public $baseUri;
+
+    /**
      * The authentication bearer.
      * 
      * @var \Actengage\LaravelMessageGears\Api\BearerToken
      */
-    protected $bearerToken;
+    public $bearerToken;
 
     /**
      * The MessageGears constructor.
@@ -25,6 +32,7 @@ class Cloud extends Base {
      */
     public function __construct(?array $config = null)
     {
+        $this->baseUri = Arr::get($config, 'base_uri');
         $this->campaignId = Arr::get($config, 'campaign_id');
         $this->campaignVersion = Arr::get($config, 'campaign_version');
         
@@ -38,7 +46,7 @@ class Cloud extends Base {
      */
     public function baseUri()
     {
-        return 'https://api.messagegears.net/v5/';    
+        return $this->baseUri ?: 'https://api.messagegears.net/v5/';    
     }
 
     /**
@@ -83,24 +91,28 @@ class Cloud extends Base {
     /**
      * Authenticate the account with the set credentials.
      * 
-     * @return bool
+     * @return \Actengage\LaravelMessageGears\Api\BearerToken
      */
     public function authenticate()
     {
         $this->bearerToken();
-        $this->client(true);
+        $this->client();
+
+        return $this->bearerToken;
     }
 
     /**
      * Attempt to authenticate user. Ignore if already authenticated.
      * 
-     * @return bool
+     * @return \Actengage\LaravelMessageGears\Api\BearerToken
      */
     public function attemptToAuthenticate()
     {
         if(!$this->isAuthenticated()) {
-            $this->authenticate();
+            return $this->authenticate();
         }
+
+        return $this->bearerToken;
     }
     
     /**
@@ -111,7 +123,7 @@ class Cloud extends Base {
      */
     public function request(string $method, string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();
 
         return parent::request($method, $uri, $options);
     }
@@ -125,7 +137,7 @@ class Cloud extends Base {
      */
     public function get(string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();
 
         return parent::get($uri, $options);
     }
@@ -139,7 +151,7 @@ class Cloud extends Base {
      */
     public function post(string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();        
 
         return parent::post($uri, $options);
     }
@@ -153,7 +165,7 @@ class Cloud extends Base {
      */
     public function put(string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();
 
         return parent::put($uri, $options);
     }
@@ -167,7 +179,7 @@ class Cloud extends Base {
      */
     public function patch(string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();
 
         return parent::patch($uri, $options);
     }
@@ -181,7 +193,7 @@ class Cloud extends Base {
      */
     public function delete(string $uri, array $options = []): Response
     {
-        $this->attemptToAuthenticate();
+        $this->authenticate();
 
         return parent::delete($uri, $options);
     }

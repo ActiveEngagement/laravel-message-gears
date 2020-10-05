@@ -72,6 +72,8 @@ class BearerToken {
     {
         $body = json_decode($response->getBody());
 
+        
+
         return new BearerToken($body->token, Carbon::make($body->expirationDate));
     }
 }

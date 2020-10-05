@@ -30,9 +30,6 @@ abstract class Base {
 
         $this->apiKey = Arr::get($config, 'api_key');
         $this->accountId = Arr::get($config, 'account_id');
-        // $this->campaignId = Arr::get($config, 'campaign_id');
-        // $this->campaignVersion = Arr::get($config, 'campaign_version');
-
         $this->client(Arr::get($config, 'client'));
     }
 
