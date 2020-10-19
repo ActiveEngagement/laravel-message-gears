@@ -13,6 +13,13 @@ abstract class Base {
     use HasAccount;
 
     /**
+     * Override the default endpoint uri.
+     * 
+     * @var string
+     */
+    protected $baseUri;
+
+    /**
      * The global Guzzle client.
      * 
      * @var \GuzzleHttp\Client
@@ -30,6 +37,7 @@ abstract class Base {
 
         $this->apiKey = Arr::get($config, 'api_key');
         $this->accountId = Arr::get($config, 'account_id');
+        $this->baseUri = Arr::get($config, 'base_uri', $this->defaultBaseUri());
         $this->client(Arr::get($config, 'client'));
     }
 
@@ -40,7 +48,7 @@ abstract class Base {
      */
     public function apiKey($apiKey = null)
     {
-        if(is_null($apiKey)){
+        if(!count(func_get_args())){
             return $this->apiKey;
         }
 
@@ -57,7 +65,7 @@ abstract class Base {
      */
     public function accountId($accountId = null)
     {
-        if(is_null($accountId)){
+        if(!count(func_get_args())){
             return $this->accountId;
         }
 
@@ -67,6 +75,23 @@ abstract class Base {
         return $this;
     }
     
+    /**
+     * Get/set the account id.
+     * 
+     * @return string
+     */
+    public function baseUri($baseUri = null)
+    {
+        if(!count(func_get_args())){
+            return $this->baseUri;
+        }
+
+        $this->baseUri = $baseUri ?: $this->defaultBaseUri();
+        $this->client();
+
+        return $this;
+    }
+
     /**
      * Get the Guzzle client.
      * 
@@ -163,12 +188,12 @@ abstract class Base {
     }
 
     /**
-     * Define the API base endpoint URI.
+     * Define the default API base endpoint URI.
      * 
      * @abstract
      * @return string
      */
-    abstract public function baseUri();
+    abstract public function defaultBaseUri();
 
     /**
      * Get the default request headers.

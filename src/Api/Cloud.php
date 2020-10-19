@@ -12,13 +12,6 @@ class Cloud extends Base {
     use HasCampaign;
 
     /**
-     * Override the default base uri.
-     * 
-     * @var string
-     */
-    public $baseUri;
-
-    /**
      * The authentication bearer.
      * 
      * @var \Actengage\LaravelMessageGears\Api\BearerToken
@@ -32,7 +25,6 @@ class Cloud extends Base {
      */
     public function __construct(?array $config = null)
     {
-        $this->baseUri = Arr::get($config, 'base_uri');
         $this->campaignId = Arr::get($config, 'campaign_id');
         $this->campaignVersion = Arr::get($config, 'campaign_version');
         
@@ -44,9 +36,9 @@ class Cloud extends Base {
      * 
      * @return string
      */
-    public function baseUri()
+    public function defaultBaseUri()
     {
-        return $this->baseUri ?: 'https://api.messagegears.net/v5/';    
+        return 'https://api.messagegears.net/v5/';    
     }
 
     /**

@@ -64,7 +64,7 @@ class MessageGearsChannelTest extends TestCase
         app('mg.api.cloud')->client([
             'handler' => $mock
         ]);
-
+        
         $user = new User();
         $user->id = 1;
         $user->email = 'test@test.com';
