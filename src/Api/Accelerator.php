@@ -6,14 +6,23 @@ use Actengage\LaravelMessageGears\Api\Base;
 
 class Accelerator extends Base {
 
+    protected $baseUri = 'http://gears.listelixr.net:8080/beta/';
+
     /**
-     * Define the API base endpoint URI.
+     * Get/set the account id.
      * 
      * @return string
      */
-    public function baseUri()
+    public function baseUri($baseUri = null)
     {
-        return 'http://gears.listelixr.net:8080/beta/';    
+        if(is_null($baseUri)){
+            return $this->baseUri;
+        }
+
+        $this->baseUri = $baseUri;
+        $this->client();
+
+        return $this;
     }
 
     /**
