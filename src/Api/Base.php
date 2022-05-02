@@ -2,11 +2,12 @@
 
 namespace Actengage\LaravelMessageGears\Api;
 
+use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Actengage\LaravelMessageGears\Concerns\HasAccount;
 use Actengage\LaravelMessageGears\Concerns\HasCampaign;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Arr;
 
 abstract class Base {
     
@@ -120,9 +121,9 @@ abstract class Base {
      * @param  string  $method
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function request(string $method, string $uri, array $options = []): Response
+    public function request(string $method, string $uri, array $options = []): ResponseInterface
     {
         return $this->client->request($method, $uri, $options);
     }
@@ -132,9 +133,9 @@ abstract class Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function get(string $uri, array $options = []): Response
+    public function get(string $uri, array $options = []): ResponseInterface
     {
         return $this->client->get($uri, $options);
     }
@@ -144,9 +145,9 @@ abstract class Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function post(string $uri, array $options = []): Response
+    public function post(string $uri, array $options = []): ResponseInterface
     {
         return $this->client->post($uri, $options);
     }
@@ -156,9 +157,9 @@ abstract class Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function put(string $uri, array $options = []): Response
+    public function put(string $uri, array $options = []): ResponseInterface
     {
         return $this->client->put($uri, $options);
     }
@@ -168,9 +169,9 @@ abstract class Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function patch(string $uri, array $options = []): Response
+    public function patch(string $uri, array $options = []): ResponseInterface
     {
         return $this->client->patch($uri, $options);
     }
@@ -180,9 +181,9 @@ abstract class Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function delete(string $uri, array $options = []): Response
+    public function delete(string $uri, array $options = []): ResponseInterface
     {
         return $this->client->delete($uri, $options);
     }

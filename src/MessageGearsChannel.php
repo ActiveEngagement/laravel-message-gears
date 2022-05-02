@@ -13,7 +13,7 @@ class MessageGearsChannel
      * Send the given notification to MessageGears.
      *
      * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  \Actengage\Notifications\SendTransactionalCampaign  $notification
      * @return void
      */
     public function send($notifiable, Notification $notification)

@@ -181,7 +181,7 @@ class Cloud extends Base {
      * 
      * @param  string  $uri
      * @param  array   $options
-     * @return \GuzzleHttp\Client
+     * @return \GuzzleHttp\Response
      */
     public function delete(string $uri, array $options = []): Response
     {
