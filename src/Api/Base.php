@@ -14,7 +14,7 @@ abstract class Base {
     use HasAccount;
 
     /**
-     * Override the default endpoint uri.
+     * Override the default uri.
      * 
      * @var string
      */
@@ -77,7 +77,7 @@ abstract class Base {
     }
     
     /**
-     * Get/set the account id.
+     * Get/set the baseUri.
      * 
      * @return string
      */
@@ -129,7 +129,7 @@ abstract class Base {
     }
     
     /**
-     * Send a POST request.
+     * Send a GET request.
      * 
      * @param  string  $uri
      * @param  array   $options
@@ -189,7 +189,7 @@ abstract class Base {
     }
 
     /**
-     * Define the default API base endpoint URI.
+     * Define the default API base URI.
      * 
      * @abstract
      * @return string

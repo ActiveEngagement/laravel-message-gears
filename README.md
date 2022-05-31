@@ -35,7 +35,7 @@ $user->email = 'test@test.com';
 $user->save();
 $user->notify(new SendTransactionalCampaign([
     'campaignId' => 'CAMPAIGN_ID'
-));
+]));
 ```
 
 ## Submit Transactional Campaign

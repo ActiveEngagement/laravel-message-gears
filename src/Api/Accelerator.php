@@ -13,7 +13,7 @@ class Accelerator extends Base {
      */
     public function defaultBaseUri()
     {
-        return 'http://gears.listelixr.net:8080/beta/';    
+        return 'http://gears.listelixr.net:8080/beta/';
     }
     
     /**
