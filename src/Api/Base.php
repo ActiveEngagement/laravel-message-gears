@@ -61,10 +61,11 @@ abstract class Base {
 
     /**
      * Get/set the account id.
-     * 
-     * @return string
+     *
+     * @param string|null $accountId
+     * @return self|string
      */
-    public function accountId($accountId = null)
+    public function accountId(string $accountId = null): self|string
     {
         if(!count(func_get_args())){
             return $this->accountId;
