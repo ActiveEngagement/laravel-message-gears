@@ -1,87 +1,45 @@
 <?php
 
-namespace Actengage\LaravelMessageGears;
+namespace Actengage\MessageGears;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-class Recipient implements Arrayable, Xmlable {
-
+class Recipient implements Arrayable
+{
     /**
-     * The recipient email address.
+     * The email address.
      *
      * @var string
      */
-    public $emailAddress;
+    public $email;
 
     /**
-     * The recipient recipient id.
+     * The id of the recipient.
      *
      * @var string
      */
     public $recipientId;
 
     /**
-     * The recipient meta data.
+     * Set the `email` property.
      *
-     * @var array
+     * @param string $email
+     * @return self
      */
-    public $meta = [];
-
-    /**
-     * Construct the recipient
-     *
-     * @return void
-     */
-    public function __construct($params = [])
+    public function email(string $email): self
     {
-        if(is_string($params)) {
-            $params = ['email' => $params];
-        }
-
-        foreach($params as $key => $value) {
-            if(method_exists($this, $key)) {
-                $this->$key($value);
-            }
-            else {
-                $this->meta($key, $value);
-            }
-        }
-    }
-
-    /**
-     * Get the meta key/values if a non existent property is set.
-     *
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        if(array_key_exists($key, $this->meta)) {
-            return $this->meta[$key];
-        }
-        
-        return null;
-    }
-
-    /**
-     * Set the email address of the recipient.
-     *
-     * @param  string  $emailAddress
-     * @return static
-     */
-    public function email(string $emailAddress)
-    {
-        $this->emailAddress = $emailAddress;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * Set the id of the recipient.
+     * Set the `recipientId` property.
      *
-     * @param  string  $id
-     * @return static
+     * @param string $recipientId
+     * @return self
      */
-    public function id(string $recipientId)
+    public function recipientId(string $recipientId): self
     {
         $this->recipientId = $recipientId;
 
@@ -89,34 +47,15 @@ class Recipient implements Arrayable, Xmlable {
     }
 
     /**
-     * Sets the meta key/value pair.
-     *
-     * @return static
-     */
-    public function meta($key, $value)
-    {
-        $this->meta[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Convert the recipient to an array.
-     *
+     * Convert the instance to an array.
+     * 
      * @return array
      */
     public function toArray()
     {
-        $values = array_filter([
-            'EmailAddress' => $this->emailAddress,
+        return array_filter([
+            'EmailAddress' => $this->email,
             'RecipientId' => $this->recipientId,
         ]);
-
-        return array_merge($values, $this->meta);
-    }
-
-    public function toXml()
-    {
-        return Xml::fromArray($this->toArray(), new Xml('<Recipient/>'));
     }
 }

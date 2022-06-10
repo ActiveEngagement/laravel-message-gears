@@ -1,11 +1,8 @@
 <?php
 
-namespace Actengage\LaravelMessageGears;
+namespace Actengage\MessageGears;
 
-use Actengage\LaravelMessageGears\Contracts\HttpMessage;
-use Actengage\LaravelMessageGears\Exceptions\InvalidRequestMessage;
-use Actengage\LaravelMessageGears\Exceptions\InvalidTransactionalCampaignSubmit;
-use Illuminate\Notifications\Notification;
+use Actengage\MessageGears\Notifications\Notification;
 
 class MessageGearsChannel
 {
@@ -13,18 +10,11 @@ class MessageGearsChannel
      * Send the given notification to MessageGears.
      *
      * @param  mixed  $notifiable
-     * @param  \Actengage\Notifications\SendTransactionalCampaign  $notification
+     * @param  \Actengage\MessageGears\Notifications\Notification  $notification
      * @return void
      */
     public function send($notifiable, Notification $notification)
     {
-        $message = $notification->toMessageGears($notifiable);
-
-        if(!$message instanceof HttpMessage) {
-            throw new InvalidTransactionalCampaignSubmit;
-        }
-
-        $message->send();
+        $notification->send($notifiable);
     }
-
 }

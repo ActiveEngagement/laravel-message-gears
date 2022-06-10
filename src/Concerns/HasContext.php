@@ -1,47 +1,32 @@
 <?php
 
-namespace Actengage\LaravelMessageGears\Concerns;
+namespace Actengage\MessageGears\Concerns;
 
-use Actengage\LaravelMessageGears\Context;
+use Actengage\MessageGears\Context;
 
-trait HasContext {
-    
+trait HasContext
+{
     /**
-     * The email context.
+     * The template context data.
      *
-     * @var \Actengage\LaravelMessageGears\Context
+     * @var Context
      */
-    public $context;
+    public Context $context;
 
     /**
-     * Get/merge the array into the notification context.
+     * Set the `context` property.
      *
-     * @param  string|array  $context
-     * @return static|\Actengage\LaravelMessageGears\Context
+     * @param \Actengage\MessageGears\Context|array $context
+     * @return self
      */
-    public function context($context = null, $value = null)
+    public function context(Context|array $context): self
     {
-        // If no context is set, instantiate and set the default context. 
-        if(!$this->context) {
-            $this->context = new Context;
+        if(is_array($context)) {
+            $context = new Context($context);
         }
 
-        // If the setter is null, get the current context
-        if(is_null($context)) {
-            return $this->context;
-        }
-
-        if($context instanceof Context) {
-            $this->context = $context;
-        }
-        else if(is_array($context)) {
-            $this->context->merge($context);
-        }
-        else {
-            $this->context->set($context, $value);
-        }
+        $this->context = $context;
 
         return $this;
     }
-
 }

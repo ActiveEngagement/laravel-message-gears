@@ -21,18 +21,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Actengage\\LaravelMessageGears\\": "src/"
+            "Actengage\\MessageGears\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Actengage\\LaravelMessageGears\\Tests\\": "tests"
+            "Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Actengage\\LaravelMessageGears\\ServiceProvider"
+                "Actengage\\MessageGears\\ServiceProvider"
             ]
         }
     },

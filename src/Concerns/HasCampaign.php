@@ -1,55 +1,42 @@
 <?php
 
-namespace Actengage\LaravelMessageGears\Concerns;
+namespace Actengage\MessageGears\Concerns;
 
-trait HasCampaign {
-    
+trait HasCampaign
+{
     /**
-     * The campaign id.
-     *
-     * @var string
+     * The campaign ID.
      */
-    public $campaignId;
-    
+    public string $campaignId;
+
     /**
      * The campaign version.
-     *
-     * @var string
      */
-    public $campaignVersion;
+    public ?string $campaignVersion = null;
 
     /**
-     * Get/set the campaign id.
+     * Set the `campaignId` property.
      *
-     * @param  string  $campaignId
-     * @return mixed|static
+     * @param string $campaignId
+     * @return self
      */
-    public function campaignId(string $campaignId = null)
+    public function campaignId(string $campaignId): self
     {
-        if(is_null($campaignId)) {
-            return $this->campaignId;
-        }
-
         $this->campaignId = $campaignId;
 
         return $this;
     }
 
     /**
-     * Get/set the campaign version.
+     * Set the `campaignVersion` property.
      *
-     * @param  string  $campaignId
-     * @return mixed|static
+     * @param string $campaignVersion
+     * @return self
      */
-    public function campaignVersion(string $campaignVersion = null)
+    public function campaignVersion(string $campaignVersion): self
     {
-        if(is_null($campaignVersion)) {
-            return $this->campaignVersion;
-        }
-
         $this->campaignVersion = $campaignVersion;
 
         return $this;
     }
-
 }

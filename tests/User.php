@@ -1,6 +1,6 @@
 <?php
 
-namespace Actengage\LaravelMessageGears\Tests;
+namespace Tests;
 
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Notifications\Notifiable;
