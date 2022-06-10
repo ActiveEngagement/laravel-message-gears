@@ -9,7 +9,7 @@ class AcceleratorTest extends TestCase
 {
     public function test_base_uri()
     {
-        $this->assertEquals('https://gears.listelxir.net:8080/', Accelerator::instance()->baseUri);
+        $this->assertEquals('https://gears.listelixr.net:8080/', Accelerator::instance()->baseUri);
     }
 
     public function test_uri()
