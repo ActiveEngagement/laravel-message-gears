@@ -2,6 +2,8 @@
 
 namespace Actengage\MessageGears;
 
+use GuzzleHttp\Client;
+
 class Cloud extends Api
 {
     /**
@@ -66,6 +68,21 @@ class Cloud extends Api
         $this->bearerToken = $token;
 
         return $this;
+    }
+
+    /**
+     * Create a new HTTP client.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function createHttpClient(): Client
+    {
+        return new Client([
+            'base_uri' => $this->baseUri,
+            'headers' => [  
+                'Accept' => 'application/json'
+            ]
+        ]);
     }
 
     /**

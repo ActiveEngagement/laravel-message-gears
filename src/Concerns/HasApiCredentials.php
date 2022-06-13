@@ -7,23 +7,23 @@ trait HasApiCredentials
     /**
      * The MessageGears account ID.
      *
-     * @var string
+     * @var string|null
      */
-    public string $accountId;
+    public ?string $accountId = null;
 
     /**
      * The MessageGears API key.
      *
-     * @var string
+     * @var string|null
      */
-    public string $apiKey;
+    public ?string $apiKey = null;
 
     /**
      * The MessageGears endpoint base URI.
      *
-     * @var string
+     * @var string|null
      */
-    public string $baseUri;
+    public ?string $baseUri = null;
 
     /**
      * The request headers.
@@ -35,10 +35,10 @@ trait HasApiCredentials
     /**
      * Set the `accountId` property.
      *
-     * @param string $accountId
+     * @param string|null $accountId
      * @return self
      */
-    public function accountId(string $accountId): self
+    public function accountId(?string $accountId): self
     {
         $this->accountId = $accountId;
 
@@ -48,10 +48,10 @@ trait HasApiCredentials
     /**
      * Set the `apiKey` property.
      *
-     * @param string $apiKey
+     * @param string|null $apiKey
      * @return self
      */
-    public function apiKey(string $apiKey): self
+    public function apiKey(?string $apiKey): self
     {
         $this->apiKey = $apiKey;
 
@@ -61,10 +61,10 @@ trait HasApiCredentials
     /**
      * Set the `baseUri` property.
      *
-     * @param string $baseUri
+     * @param string|null $baseUri
      * @return self
      */
-    public function baseUri(string $baseUri): self
+    public function baseUri(?string $baseUri): self
     {
         $this->baseUri = $baseUri;
 

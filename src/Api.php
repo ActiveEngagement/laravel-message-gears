@@ -29,23 +29,18 @@ abstract class Api
     /**
      * The Guzzle client.
      *
-     * @var \GuzzleHttp\Client
+     * @var \GuzzleHttp\Client|null
      */
-    public Client $client;
+    public ?Client $client = null;
 
     /**
      * Create a new instance.
      */
-    public function __construct(string $accountId, string $apiKey)
+    public function __construct(string $accountId = null, string $apiKey = null, string $baseUri = null)
     {
         $this->accountId($accountId);
         $this->apiKey($apiKey);
-        $this->client(new Client([
-            'base_uri' => $this->baseUri,
-            'headers' => [  
-                'Accept' => 'application/json'
-            ]
-        ]));
+        $this->baseUri($baseUri);
     }
 
     /**
@@ -72,6 +67,13 @@ abstract class Api
 
         return $this;
     }
+
+    /**
+     * Create a new HTTP client.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    abstract public function createHttpClient(): Client;
 
     /**
      * Get this instance.
@@ -110,7 +112,9 @@ abstract class Api
      */
     public function request(string $method, array|string $uri, array $options = []): Response
     {
-        return $this->client->$method($this->uri($uri), array_merge_recursive($options, [
+        $client = $this->client ?? $this->createHttpClient();
+
+        return $client->$method($this->uri($uri), array_merge_recursive($options, [
             'headers' => $this->headers
         ]));
     }
@@ -123,9 +127,9 @@ abstract class Api
      */
     public function uri(...$args): string
     {
-        return $this->prependVersion(
-            collect([...$args])->flatten()->implode('/')
-        );
+        return $this->prependVersion(sprintf(
+            ...collect([...$args])->flatten()->values()
+        ));
     }
 
     /**
@@ -136,7 +140,9 @@ abstract class Api
      */
     public function shouldPrependVersion(string $uri): bool
     {
-        if(!static::VERSION_PATTERN || preg_match('/^\//', $uri)) {
+        if(!static::VERSION_PATTERN
+            || preg_match('/^\//', $uri)
+            || preg_match(static::VERSION_PATTERN, $this->baseUri)) {
             return false;
         }
 
