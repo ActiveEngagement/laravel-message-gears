@@ -25,7 +25,7 @@ class Accelerator extends Api
      *
      * @var string
      */
-    public string $baseUri = 'https://gears.listelixr.net:8080/';
+    public string $baseUri = 'http://gears.listelixr.net:8080/';
 
     /**
      * Create a new instance.
