@@ -17,8 +17,7 @@ class CloudTest extends TestCase
     {
         $this->assertEquals('/test', Cloud::uri('/test'));
         $this->assertEquals('v5.1/test', Cloud::uri('test'));
-        $this->assertEquals('v5.1/a/1/b/2', Cloud::uri('a', 1, 'b', '2'));
-        $this->assertEquals('v5.1/a/1/b/2', Cloud::uri(['a', 1, 'b', '2']));
+        $this->assertEquals('v5.1/a/1/b/2', Cloud::uri('a/%d/b/%s', 1, '2'));
         $this->assertEquals('v5/test', Cloud::uri('v5/test'));
         $this->assertEquals('/v5/test', Cloud::uri('/v5/test'));
         $this->assertEquals('v5.1/v5test', Cloud::uri('v5test'));
@@ -44,9 +43,9 @@ class CloudTest extends TestCase
             $this->authenticate(),
             $this->ok()
         ]);
-        
+
         $response = Cloud::post('provisioning/account/1');
-        
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

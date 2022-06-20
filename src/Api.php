@@ -36,11 +36,10 @@ abstract class Api
     /**
      * Create a new instance.
      */
-    public function __construct(string $accountId = null, string $apiKey = null, string $baseUri = null)
+    public function __construct(string $accountId = null, string $apiKey = null)
     {
         $this->accountId($accountId);
         $this->apiKey($apiKey);
-        $this->baseUri($baseUri);
     }
 
     /**

@@ -72,6 +72,21 @@ trait HasApiCredentials
     }
 
     /**
+     * Set the configurations using an array.
+     *
+     * @param array $config
+     * @return self
+     */
+    public function configure(array $config): self
+    {
+        foreach($config as $key => $value) {
+            $this->$key($value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Set the `header` property.
      *
      * @param array $key
