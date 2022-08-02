@@ -4,6 +4,8 @@ namespace Actengage\MessageGears;
 
 use Actengage\MessageGears\Accelerator;
 use Actengage\MessageGears\Cloud;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -14,18 +16,29 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-        $this->registerCloudApi();
-        $this->registerAcceleratorApi();
+        //
     }
 
     /**
-     * Boot any application services.
+     * Bootstrap any application services.
      *
      * @return void
      */
     public function boot()
     {
-        //
+        $this->registerCloudApi();
+        $this->registerAcceleratorApi();
+        $this->registerMessageGearsTransport();
+
+        Mail::extend('messagegears', function (array $config = []) {
+            if(Arr::has($config, 'resolver')) {
+                return (new $config['resolver'])($this->app, $config);
+            }
+
+            return new MessageGearsTransport(
+                $this->app->get(Cloud::class), Arr::get($config, 'campaign_id')
+            );
+        });
     }
 
     /**
@@ -58,5 +71,19 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         $this->app->alias(Accelerator::class, 'mg.api.accelerator');
+    }
+
+    /**
+     * Register the MessageGears transport.
+     *
+     * @return void
+     */
+    protected function registerMessageGearsTransport(): void
+    {
+        $this->app->singleton(MessageGearsTransport::class, function() {
+            return new MessageGearsTransport(
+                $this->app->get(Accelerator::class)
+            );
+        });
     }
 }
