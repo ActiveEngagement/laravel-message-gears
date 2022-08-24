@@ -2,6 +2,7 @@
 
 namespace Actengage\MessageGears;
 
+use Illuminate\Support\Arr;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Envelope;
@@ -54,6 +55,8 @@ class MessageGearsTransport extends AbstractTransport
                         'SubjectLine' => $email->getSubject(),
                         'TextContent' => $email->getTextBody(),
                         'HtmlContent' => $email->getHtmlBody(),
+                        'FromAddress' => $this->getFromAddress($message),
+                        'FromName' => $this->getFromName($message),
                     ],
                     'format' => 'JSON'
                 ],
@@ -65,5 +68,19 @@ class MessageGearsTransport extends AbstractTransport
                 ],
             ]),
         ]);
-    }  
+    }
+
+    protected function getFromAddress(SentMessage $message): ?string
+    {
+        if($from = Arr::get($message->getOriginalMessage()->getFrom(), 0)) {
+            return $from->getAddress();
+        }
+    }
+
+    protected function getFromName(SentMessage $message): ?string
+    {
+        if($from = Arr::get($message->getOriginalMessage()->getFrom(), 0)) {
+            return $from->getName();
+        }
+    }
 }
