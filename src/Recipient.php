@@ -22,9 +22,6 @@ class Recipient implements Arrayable
 
     /**
      * Set the `email` property.
-     *
-     * @param string $email
-     * @return self
      */
     public function email(string $email): self
     {
@@ -35,9 +32,6 @@ class Recipient implements Arrayable
 
     /**
      * Set the `recipientId` property.
-     *
-     * @param string $recipientId
-     * @return self
      */
     public function recipientId(string $recipientId): self
     {
@@ -48,7 +42,7 @@ class Recipient implements Arrayable
 
     /**
      * Convert the instance to an array.
-     * 
+     *
      * @return array
      */
     public function toArray()

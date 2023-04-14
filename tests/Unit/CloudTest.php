@@ -26,7 +26,7 @@ class CloudTest extends TestCase
     public function test_authentication()
     {
         Cloud::mock([
-            $mock = $this->authenticate()
+            $mock = $this->authenticate(),
         ]);
 
         extract(json_decode($mock->getBody(), true));
@@ -41,7 +41,7 @@ class CloudTest extends TestCase
     {
         Cloud::mock([
             $this->authenticate(),
-            $this->ok()
+            $this->ok(),
         ]);
 
         $response = Cloud::post('provisioning/account/1');

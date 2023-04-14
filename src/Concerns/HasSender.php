@@ -22,8 +22,7 @@ trait HasSender
     /**
      * Set the `fromAddress` property.
      *
-     * @param string $subject
-     * @return self
+     * @param  string  $subject
      */
     public function fromAddress(string $fromAddress): self
     {
@@ -34,9 +33,6 @@ trait HasSender
 
     /**
      * Set the `fromName` property.
-     *
-     * @param string $fromName
-     * @return self
      */
     public function fromName(string $fromName): self
     {
@@ -47,9 +43,6 @@ trait HasSender
 
     /**
      * Set the `replyToAddress` property.
-     *
-     * @param string $replyToAddress
-     * @return self
      */
     public function replyToAddress(string $replyToAddress): self
     {

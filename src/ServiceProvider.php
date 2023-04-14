@@ -2,8 +2,6 @@
 
 namespace Actengage\MessageGears;
 
-use Actengage\MessageGears\Accelerator;
-use Actengage\MessageGears\Cloud;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 
@@ -31,7 +29,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->registerMessageGearsTransport();
 
         Mail::extend('messagegears', function (array $config = []) {
-            if(Arr::has($config, 'resolver')) {
+            if (Arr::has($config, 'resolver')) {
                 return (new $config['resolver'])($this->app, $config);
             }
 
@@ -43,12 +41,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     /**
      * Register the Cloud API.
-     *
-     * @return void
      */
     protected function registerCloudApi(): void
     {
-        $this->app->singleton(Cloud::class, function() {
+        $this->app->singleton(Cloud::class, function () {
             return (new Cloud())->configure(array_filter(
                 config('services.messagegears.cloud') ?? []
             ));
@@ -59,12 +55,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     /**
      * Register the Accelerator API.
-     *
-     * @return void
      */
     protected function registerAcceleratorApi(): void
     {
-        $this->app->singleton(Accelerator::class, function() {
+        $this->app->singleton(Accelerator::class, function () {
             return (new Accelerator())->configure(array_filter(
                 config('services.messagegears.accelerator') ?? []
             ));
@@ -75,12 +69,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     /**
      * Register the MessageGears transport.
-     *
-     * @return void
      */
     protected function registerMessageGearsTransport(): void
     {
-        $this->app->singleton(MessageGearsTransport::class, function() {
+        $this->app->singleton(MessageGearsTransport::class, function () {
             return new MessageGearsTransport(
                 $this->app->get(Accelerator::class)
             );

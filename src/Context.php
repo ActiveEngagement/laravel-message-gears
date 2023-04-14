@@ -9,7 +9,7 @@ class Context extends Repository implements Arrayable
 {
     /**
      * Convert the instance to an array.
-     * 
+     *
      * @return array
      */
     public function toArray()

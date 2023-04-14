@@ -11,7 +11,7 @@ use GuzzleHttp\Psr7\Response;
 abstract class Api
 {
     use HasApiCredentials;
-    
+
     /**
      * The default API version.
      *
@@ -28,8 +28,6 @@ abstract class Api
 
     /**
      * The Guzzle client.
-     *
-     * @var \GuzzleHttp\Client|null
      */
     public ?Client $client = null;
 
@@ -45,8 +43,8 @@ abstract class Api
     /**
      * Call the method on the Guzzle client.
      *
-     * @param string $method
-     * @param array $args
+     * @param  string  $method
+     * @param  array  $args
      * @return \GuzzleHttp\Psr7\Response
      */
     public function __call($method, $args)
@@ -57,8 +55,7 @@ abstract class Api
     /**
      * Set the `client` property.
      *
-     * @param string $client
-     * @return self
+     * @param  string  $client
      */
     public function client(Client $client): self
     {
@@ -69,15 +66,11 @@ abstract class Api
 
     /**
      * Create a new HTTP client.
-     *
-     * @return \GuzzleHttp\Client
      */
     abstract public function createHttpClient(): Client;
 
     /**
      * Get this instance.
-     *
-     * @return self
      */
     public function instance(): self
     {
@@ -87,8 +80,7 @@ abstract class Api
     /**
      * Mock a Guzzle client.
      *
-     * @param array<\GuzzleHttp\Psr7\Request> $requests
-     * @return self
+     * @param  array<\GuzzleHttp\Psr7\Request>  $requests
      */
     public function mock(array $requests): self
     {
@@ -96,33 +88,27 @@ abstract class Api
             new Client([
                 'handler' => HandlerStack::create(
                     new MockHandler($requests)
-                )
+                ),
             ])
         );
     }
 
     /**
      * Send an HTTP request.
-     *
-     * @param string $method
-     * @param array|string $uri
-     * @param array $options
-     * @return \GuzzleHttp\Psr7\Response
      */
     public function request(string $method, array|string $uri, array $options = []): Response
     {
         $client = $this->client ?? $this->createHttpClient();
 
         return $client->$method($this->uri($uri), array_merge_recursive($options, [
-            'headers' => $this->headers
+            'headers' => $this->headers,
         ]));
     }
 
     /**
      * Build a uri string
      *
-     * @param array|string ...$args
-     * @return string
+     * @param  array|string  ...$args
      */
     public function uri(...$args): string
     {
@@ -133,33 +119,29 @@ abstract class Api
 
     /**
      * Determine if the version should be prepended to the URI.
-     *
-     * @param string $uri
-     * @return bool
      */
     public function shouldPrependVersion(string $uri): bool
     {
-        if(!static::VERSION_PATTERN
+        if (! static::VERSION_PATTERN
             || preg_match('/^\//', $uri)
             || preg_match(static::VERSION_PATTERN, $this->baseUri)) {
             return false;
         }
 
-        return !preg_match(static::VERSION_PATTERN, $uri);
+        return ! preg_match(static::VERSION_PATTERN, $uri);
     }
 
     /**
      * Prepend the version.
      *
-     * @param string $uri
      * @return string
      */
     public function prependVersion(string $uri)
     {
-        if(!$this->shouldPrependVersion($uri)) {
+        if (! $this->shouldPrependVersion($uri)) {
             return $uri;
         }
-        
+
         return sprintf('%s/%s', static::VERSION, $uri);
     }
 }

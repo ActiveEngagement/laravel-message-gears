@@ -23,11 +23,11 @@ class AcceleratorTest extends TestCase
     public function test_post_request()
     {
         Accelerator::mock([
-            $this->ok()
+            $this->ok(),
         ]);
-        
+
         $response = Accelerator::post('test');
-        
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

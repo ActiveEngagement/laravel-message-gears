@@ -2,17 +2,8 @@
 
 namespace Tests\Unit;
 
-use Actengage\MessageGears\Api\BearerToken;
-use Actengage\MessageGears\Exceptions\InvalidTransactionalCampaignSubmit;
-use Actengage\MessageGears\Exceptions\MissingRecipient;
-use Actengage\MessageGears\Facades\Cloud;
-use Actengage\MessageGears\MessageGearsChannel;
-use Actengage\MessageGears\Notifications\SendTransactionalCampaign;
 use Actengage\MessageGears\Notifications\Test;
 use Actengage\MessageGears\Notifications\TransactionalEmail;
-use Actengage\MessageGears\Tests\FailedNotification;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -22,7 +13,7 @@ class MessageGearsChannelTest extends TestCase
 {
     /**
      * Test that the message can be sent.
-     * 
+     *
      * @return void
      */
     public function testMessageCanBeSent()
@@ -36,7 +27,7 @@ class MessageGearsChannelTest extends TestCase
             ->context([
                 'SubjectLine' => 'test',
                 'HtmlContent' => 'Hello!',
-                'TextContent' => 'Hellp!'
+                'TextContent' => 'Hellp!',
             ]);
 
         $user = new User();
@@ -45,7 +36,6 @@ class MessageGearsChannelTest extends TestCase
         $user->email = 'jkimbrell@actengage.com';
         $user->save();
         $user->notify($notification);
-
 
         Notification::assertSentTo($user, TransactionalEmail::class);
     }

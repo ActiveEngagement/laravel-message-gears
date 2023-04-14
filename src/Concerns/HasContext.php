@@ -8,20 +8,15 @@ trait HasContext
 {
     /**
      * The template context data.
-     *
-     * @var Context
      */
     public Context $context;
 
     /**
      * Set the `context` property.
-     *
-     * @param \Actengage\MessageGears\Context|array $context
-     * @return self
      */
     public function context(Context|array $context): self
     {
-        if(is_array($context)) {
+        if (is_array($context)) {
             $context = new Context($context);
         }
 

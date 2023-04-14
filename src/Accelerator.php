@@ -22,25 +22,21 @@ class Accelerator extends Api
 
     /**
      * The MessageGears endpoint base URI.
-     *
-     * @var string|null
      */
     public ?string $baseUri = 'http://gears.listelixr.net:8080/';
 
     /**
      * Create a new HTTP client.
-     *
-     * @return \GuzzleHttp\Client
      */
     public function createHttpClient(): Client
     {
         return new Client([
             'base_uri' => $this->baseUri,
-            'headers' => [  
+            'headers' => [
                 'Accept' => 'application/json',
                 'ApiKey' => $this->apiKey,
                 'CustomerId' => $this->accountId,
-            ]
+            ],
         ]);
     }
 }

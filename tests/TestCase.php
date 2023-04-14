@@ -3,15 +3,11 @@
 namespace Tests;
 
 use Actengage\MessageGears\ServiceProvider;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 
 class TestCase extends \Orchestra\Testbench\TestCase
-{    
+{
     public function setUp(): void
     {
         parent::setUp();
@@ -19,7 +15,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $this->loadLaravelMigrations();
 
         $this->artisan('migrate', [
-            '--database' => 'testbench'
+            '--database' => 'testbench',
         ]);
 
         // additional setup
@@ -28,7 +24,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class
+            ServiceProvider::class,
         ];
     }
 
@@ -39,11 +35,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
 
         $app['config']->set('database.default', 'testbench');
-        
+
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         $app['config']->set('services.messagegears', [
@@ -57,7 +53,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return $this->ok([
             'token' => md5(microtime()),
-            'expirationDate' => now()->addHour()
+            'expirationDate' => now()->addHour(),
         ]);
     }
 

@@ -16,9 +16,6 @@ trait HasCampaign
 
     /**
      * Set the `campaignId` property.
-     *
-     * @param string $campaignId
-     * @return self
      */
     public function campaignId(string $campaignId): self
     {
@@ -29,9 +26,6 @@ trait HasCampaign
 
     /**
      * Set the `campaignVersion` property.
-     *
-     * @param string $campaignVersion
-     * @return self
      */
     public function campaignVersion(string $campaignVersion): self
     {

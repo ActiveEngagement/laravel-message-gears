@@ -19,11 +19,9 @@ class Cloud extends Api
      * @var string
      */
     public const VERSION_PATTERN = '/v\d(\.\d)?\//';
-    
+
     /**
      * The MessageGears endpoint base URI.
-     *
-     * @var string|null
      */
     public ?string $baseUri = 'https://api.messagegears.net/';
 
@@ -36,12 +34,10 @@ class Cloud extends Api
 
     /**
      * Ensures the requests are authenticated.
-     *
-     * @return self
      */
     public function authenticate(): self
     {
-        if($this->isAuthenticated()) {
+        if ($this->isAuthenticated()) {
             return $this;
         }
 
@@ -49,7 +45,7 @@ class Cloud extends Api
             'json' => [
                 'username' => $this->accountId,
                 'password' => $this->apiKey,
-            ] 
+            ],
         ]);
 
         return $this
@@ -60,8 +56,7 @@ class Cloud extends Api
     /**
      * Set the `bearerToken` property.
      *
-     * @param \Actengage\MessageGears\BearerToken $token
-     * @return self
+     * @param  \Actengage\MessageGears\BearerToken  $token
      */
     public function bearerToken(BearerToken $token): self
     {
@@ -72,23 +67,19 @@ class Cloud extends Api
 
     /**
      * Create a new HTTP client.
-     *
-     * @return \GuzzleHttp\Client
      */
     public function createHttpClient(): Client
     {
         return new Client([
             'base_uri' => $this->baseUri,
-            'headers' => [  
-                'Accept' => 'application/json'
-            ]
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
     }
 
     /**
      * Checks it an active bearer token exists.
-     *
-     * @return boolean
      */
     public function isAuthenticated(): bool
     {
