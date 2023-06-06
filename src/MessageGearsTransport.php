@@ -53,6 +53,7 @@ class MessageGearsTransport extends AbstractTransport
                 'recipient' => [
                     'data' => [
                         'EmailAddress' => $to = $email->getTo()[0]->getAddress(),
+                        'FirstName' => 'Friend',
                     ],
                     'format' => 'JSON',
                 ],
