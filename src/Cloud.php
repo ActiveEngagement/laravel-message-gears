@@ -23,7 +23,7 @@ class Cloud extends Api
     /**
      * The MessageGears endpoint base URI.
      */
-    public ?string $baseUri = 'https://api.messagegears.net/';
+    public ?string $baseUri = 'https://api.messagegears.net/v5';
 
     /**
      * The authentication bearer token.
