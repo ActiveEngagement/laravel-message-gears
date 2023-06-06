@@ -17,6 +17,7 @@ class MessageGearsTransport extends AbstractTransport
     public function __construct(
         protected Cloud $api,
         protected string $campaignId,
+        protected array $jsonBody = [],
         ...$args
     ) {
         parent::__construct(...$args);
@@ -38,7 +39,7 @@ class MessageGearsTransport extends AbstractTransport
         $email = MessageConverter::toEmail($message->getOriginalMessage());
 
         $this->api->authenticate()->post(['v5.1/campaign/transactional/%s', $this->campaignId], [
-            'json' => array_filter([
+            'json' => array_filter(array_merge_recursive([
                 'accountId' => $this->api->accountId,
                 'context' => [
                     'data' => [
@@ -52,12 +53,11 @@ class MessageGearsTransport extends AbstractTransport
                 ],
                 'recipient' => [
                     'data' => [
-                        'EmailAddress' => $to = $email->getTo()[0]->getAddress(),
-                        'FirstName' => 'Friend',
+                        'EmailAddress' => $email->getTo()[0]->getAddress(),
                     ],
                     'format' => 'JSON',
                 ],
-            ]),
+            ], $this->jsonBody)),
         ]);
     }
 
