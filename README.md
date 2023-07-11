@@ -27,7 +27,7 @@ return [
 Using the default notification is simple. Instantiate the notification and pass the parameters. Any parameters will override global or defaults values.
 
 ``` php
-use Actengage\LaravelMessageGears\Notifications\SendTransactionalCampaign;
+use Actengage\MessageGears\Notifications\SendTransactionalCampaign;
 
 $user = new User();
 $user->email = 'test@test.com';
@@ -55,7 +55,7 @@ app('messagegears')->submitTransactionCampaign([
 You can also instantiate the fluent message builder and send the message directly. 
 
 ``` php
-use Actengage\LaravelMessageGears\TransactionalCampaignSubmit;
+use Actengage\MessageGears\TransactionalCampaignSubmit;
 
 $message = (new TransactionalCampaignSubmit)
     ->accountId(1)
@@ -68,16 +68,16 @@ app('messagegears')->submitTransactionalCampaign($message)
 
 ## Custom Notifications
 
-This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\LaravelMessageGears\TransactionalCampaignSubmit`.
+This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\MessageGears\TransactionalCampaignSubmit`.
 
 ``` php
 <?php
 
-namespace Actengage\LaravelMessageGears\Notifications;
+namespace Actengage\MessageGears\Notifications;
 
 use Illuminate\Notifications\Notification;
-use Actengage\LaravelMessageGears\TransactionalCampaignChannel;
-use Actengage\LaravelMessageGears\Messages\TransactionalCampaignSubmit;
+use Actengage\MessageGears\TransactionalCampaignChannel;
+use Actengage\MessageGears\Messages\TransactionalCampaignSubmit;
 
 class SendTransactionalCampaign extends Notification
 {
@@ -114,7 +114,7 @@ class SendTransactionalCampaign extends Notification
      * Cast the notification as a transactional campaign message.
      *
      * @param  array  $params
-     * @return \Actengage\LaravelMessageGears\TransactionalCampaignSubmit
+     * @return \Actengage\MessageGears\TransactionalCampaignSubmit
      */
     public function toTransactionalCampaign($notifiable)
     {

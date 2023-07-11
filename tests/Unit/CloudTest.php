@@ -10,7 +10,7 @@ class CloudTest extends TestCase
 {
     public function test_base_uri()
     {
-        $this->assertEquals('https://api.messagegears.net/', Cloud::instance()->baseUri);
+        $this->assertEquals('https://api.messagegears.net/v5', Cloud::instance()->baseUri);
     }
 
     public function test_uri()

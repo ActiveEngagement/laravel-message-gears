@@ -110,7 +110,7 @@ class TransactionalEmail extends Notification
      */
     public function uri(): string
     {
-        return Cloud::uri('v5.1/campaign/transactional', $this->campaignId);
+        return Cloud::uri('v5.1/campaign/transactional/%s', $this->campaignId);
     }
 
     /**
@@ -138,10 +138,12 @@ class TransactionalEmail extends Notification
                     'latestSendTime' => $this->latestSendTime,
                     'notificationEmailAddress' => $this->notificationEmailAddress,
                 ]),
-                'context' => [
-                    'data' => $this->context->toArray(),
-                    'format' => 'JSON',
-                ],
+                'context' => (
+                    !empty($data = $this->context->toArray()) ? [
+                        'data' => $data,
+                        'format' => 'JSON'
+                    ] : []
+                ),
                 'recipient' => [
                     'data' => $this->recipient($notifiable)->toArray(),
                     'format' => 'JSON',
