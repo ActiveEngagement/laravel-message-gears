@@ -27,7 +27,7 @@ class BearerToken
         }
 
         $this->token = $token;
-        $this->expirationDate = Carbon::make($expirationDate)->subSeconds(30);
+        $this->expirationDate = Carbon::parse($expirationDate, 'utc')->subSeconds(30);
     }
 
     /**
