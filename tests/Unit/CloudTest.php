@@ -34,7 +34,7 @@ class CloudTest extends TestCase
         $bearerToken = Cloud::authenticate()->bearerToken;
 
         $this->assertEquals($token, $bearerToken->token);
-        $this->assertEquals(Carbon::make($expirationDate), $bearerToken->expirationDate);
+        $this->assertEquals(Carbon::make($expirationDate)->subSeconds(30), $bearerToken->expirationDate);
     }
 
     public function test_post_request()
