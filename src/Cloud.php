@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use GuzzleHttp\Client;
+use Override;
 
 class Cloud extends Api
 {
     /**
      * The default API version.
-     *
-     * @var string
      */
-    public const VERSION = 'v5.1';
+    public const string VERSION = 'v5.1';
 
     /**
      * The version pattern.
-     *
-     * @var string
      */
-    public const VERSION_PATTERN = '/v\d(\.\d)?\//';
+    public const string VERSION_PATTERN = '/v\d(\.\d)?\//';
 
     /**
      * The MessageGears endpoint base URI.
@@ -27,15 +26,13 @@ class Cloud extends Api
 
     /**
      * The authentication bearer token.
-     *
-     * @var \Actengage\MessageGears\BearerToken|null
      */
     public ?BearerToken $bearerToken = null;
 
     /**
      * Ensures the requests are authenticated.
      */
-    public function authenticate(): self
+    public function authenticate(): static
     {
         if ($this->isAuthenticated()) {
             return $this;
@@ -48,15 +45,17 @@ class Cloud extends Api
             ],
         ]);
 
-        return $this
-            ->bearerToken(BearerToken::response($response))
-            ->header('Authorization', $this->bearerToken->token);
+        $this->bearerToken(BearerToken::response($response));
+
+        /** @var BearerToken $bearerToken */
+        $bearerToken = $this->bearerToken;
+        $this->header('Authorization', $bearerToken->token);
+
+        return $this;
     }
 
     /**
      * Set the `bearerToken` property.
-     *
-     * @param  \Actengage\MessageGears\BearerToken  $token
      */
     public function bearerToken(BearerToken $token): self
     {
@@ -68,6 +67,7 @@ class Cloud extends Api
     /**
      * Create a new HTTP client.
      */
+    #[Override]
     public function createHttpClient(): Client
     {
         return new Client([
@@ -83,6 +83,6 @@ class Cloud extends Api
      */
     public function isAuthenticated(): bool
     {
-        return $this->bearerToken && $this->bearerToken->isActive();
+        return $this->bearerToken instanceof BearerToken && $this->bearerToken->isActive();
     }
 }

@@ -1,42 +1,57 @@
 <?php
 
-namespace Tests\Unit;
+declare(strict_types=1);
 
-use Actengage\MessageGears\Notifications\Test;
+use Actengage\MessageGears\Facades\Cloud as CloudFacade;
+use Actengage\MessageGears\MessageGearsChannel;
 use Actengage\MessageGears\Notifications\TransactionalEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Tests\TestCase;
 use Tests\User;
 
-class MessageGearsChannelTest extends TestCase
-{
-    /**
-     * Test that the message can be sent.
-     *
-     * @return void
-     */
-    public function testMessageCanBeSent()
-    {
-        Notification::fake();
+it('can send a notification via the message gears channel', function (): void {
+    Notification::fake();
 
-        $campaignId = config('services.messagegears.campaign_id');
+    $campaignId = config('services.messagegears.campaign_id');
 
-        $notification = TransactionalEmail::make()
-            ->campaignId($campaignId)
-            ->context([
-                'SubjectLine' => 'test',
-                'HtmlContent' => 'Hello!',
-                'TextContent' => 'Hellp!',
-            ]);
+    $notification = TransactionalEmail::make()
+        ->campaignId($campaignId)
+        ->context([
+            'SubjectLine' => 'test',
+            'HtmlContent' => 'Hello!',
+            'TextContent' => 'Hello!',
+        ]);
 
-        $user = new User();
-        $user->name = 'test';
-        $user->password = Hash::make('test');
-        $user->email = 'jkimbrell@actengage.com';
-        $user->save();
-        $user->notify($notification);
+    $user = new User;
+    $user->name = 'test';
+    $user->password = Hash::make('test');
+    $user->email = 'test@example.com';
+    $user->save();
+    $user->notify($notification);
 
-        Notification::assertSentTo($user, TransactionalEmail::class);
-    }
-}
+    Notification::assertSentTo($user, TransactionalEmail::class);
+});
+
+it('sends notification through the channel directly', function (): void {
+    CloudFacade::mock([
+        authenticate(),
+        ok(),
+    ]);
+
+    $channel = new MessageGearsChannel;
+
+    $notification = TransactionalEmail::make()
+        ->campaignId('test-campaign')
+        ->context(['SubjectLine' => 'Direct test']);
+
+    $user = new User;
+    $user->name = 'test';
+    $user->password = Hash::make('test');
+    $user->email = 'test@example.com';
+    $user->save();
+
+    $channel->send($user, $notification);
+
+    // If we reach here without exception, the channel sent successfully
+    expect(true)->toBeTrue();
+});

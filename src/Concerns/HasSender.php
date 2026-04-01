@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Concerns;
 
 trait HasSender
@@ -21,8 +23,6 @@ trait HasSender
 
     /**
      * Set the `fromAddress` property.
-     *
-     * @param  string  $subject
      */
     public function fromAddress(string $fromAddress): self
     {

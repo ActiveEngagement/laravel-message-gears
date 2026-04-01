@@ -1,124 +1,139 @@
-# MessageGears
+# MessageGears for Laravel
 
-![PHP Composer](https://github.com/actengage/laravel-message-gears/workflows/PHP%20Composer/badge.svg)
+[![CI](https://github.com/ActiveEngagement/laravel-message-gears/actions/workflows/ci.yml/badge.svg)](https://github.com/ActiveEngagement/laravel-message-gears/actions/workflows/ci.yml)
 
-This is an API wrapper for MessageGears specifically for Laravel. This package providers a fluent syntax for sending MessageGears requests and notifications in Laravel.
+A Laravel package for the MessageGears API. Provides fluent Cloud and Accelerator API clients, a notification channel, and a Symfony Mailer transport.
 
-    composer require actengage/laravel-message-gears
+## Requirements
 
-## Config
+- PHP 8.3+
+- Laravel 11, 12, or 13
 
-Define the MessageGears config in the `config/services.php` file. Any value here is considered the global default and can be overriden on a per-request basis.
+## Installation
 
-``` php
+```bash
+composer require actengage/laravel-message-gears
+```
+
+The service provider is auto-discovered.
+
+## Configuration
+
+Add your MessageGears credentials to `config/services.php`:
+
+```php
 // config/services.php
 
 return [
-    'messagesgears' => [
-        'api_key' => '...',
-        'account_id' => '...',
-        'campaign_id' => '...',
-    ]
-]
+    'messagegears' => [
+        'cloud' => [
+            'accountId' => env('MESSAGEGEARS_ACCOUNT_ID'),
+            'apiKey'    => env('MESSAGEGEARS_API_KEY'),
+        ],
+        'accelerator' => [
+            'accountId' => env('MESSAGEGEARS_ACCELERATOR_ACCOUNT_ID'),
+            'apiKey'    => env('MESSAGEGEARS_ACCELERATOR_API_KEY'),
+        ],
+        'campaign_id' => env('MESSAGEGEARS_CAMPAIGN_ID'),
+    ],
+];
 ```
 
-## Laravel Notification
+## Usage
 
-Using the default notification is simple. Instantiate the notification and pass the parameters. Any parameters will override global or defaults values.
+### Sending a Transactional Email Notification
 
-``` php
-use Actengage\MessageGears\Notifications\SendTransactionalCampaign;
+```php
+use Actengage\MessageGears\Notifications\TransactionalEmail;
 
-$user = new User();
-$user->email = 'test@test.com';
-$user->save();
-$user->notify(new SendTransactionalCampaign([
-    'campaignId' => 'CAMPAIGN_ID'
-]));
+$notification = TransactionalEmail::make()
+    ->campaignId('CAMPAIGN_ID')
+    ->context([
+        'SubjectLine' => 'Welcome!',
+        'HtmlContent' => '<h1>Hello</h1>',
+        'TextContent' => 'Hello',
+    ]);
+
+$user->notify($notification);
 ```
 
-## Submit Transactional Campaign
+### Cloud API
 
-Manually send a transactional campaign using the service provider.
+The Cloud facade authenticates automatically and prepends the API version to URIs.
 
-``` php
-app('messagegears')->submitTransactionCampaign([
-    'campaignId' => 'CAMPAIGN_ID',
-    'recipient' => [
-        'email' => 'test@test.com'
-    ]
+```php
+use Actengage\MessageGears\Facades\Cloud;
+
+// Authenticated POST request
+$response = Cloud::authenticate()->post('campaign/transactional/CAMPAIGN_ID', [
+    'json' => [
+        'accountId' => 'ACCOUNT_ID',
+        'recipient' => [
+            'data' => ['EmailAddress' => 'user@example.com'],
+            'format' => 'JSON',
+        ],
+    ],
 ]);
 ```
 
-## Fluent Message Builder
+### Accelerator API
 
-You can also instantiate the fluent message builder and send the message directly. 
+```php
+use Actengage\MessageGears\Facades\Accelerator;
 
-``` php
-use Actengage\MessageGears\TransactionalCampaignSubmit;
-
-$message = (new TransactionalCampaignSubmit)
-    ->accountId(1)
-    ->apiKey('API_KEY')
-    ->to('test@test.com')
-    ->context('some.nested.context', true);
-
-app('messagegears')->submitTransactionalCampaign($message)
+$response = Accelerator::post('endpoint', [
+    'json' => ['key' => 'value'],
+]);
 ```
 
-## Custom Notifications
+### Mail Transport
 
-This is an example of notification. The `toTransactionalCampaign` campaign must return an instance of `Actengage\MessageGears\TransactionalCampaignSubmit`.
+You can use MessageGears as a Laravel mail transport. Add the mailer to `config/mail.php`:
 
-``` php
-<?php
+```php
+// config/mail.php
 
-namespace Actengage\MessageGears\Notifications;
-
-use Illuminate\Notifications\Notification;
-use Actengage\MessageGears\TransactionalCampaignChannel;
-use Actengage\MessageGears\Messages\TransactionalCampaignSubmit;
-
-class SendTransactionalCampaign extends Notification
-{
-    /**
-     * The notification params.
-     *
-     * @var  array  $params
-     */
-    public $params;
-
-    /**
-     * The notification constructor.
-     *
-     * @param  array  $params
-     * @return void
-     */
-    public function __construct(array $params = [])
-    {
-        $this->params = $params;    
-    }
-    
-    /**
-     * Get the notification channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array|string
-     */
-    public function via($notifiable)
-    {
-        return [TransactionalCampaignChannel::class];
-    }
-
-    /**
-     * Cast the notification as a transactional campaign message.
-     *
-     * @param  array  $params
-     * @return \Actengage\MessageGears\TransactionalCampaignSubmit
-     */
-    public function toTransactionalCampaign($notifiable)
-    {
-        return new TransactionalCampaignSubmit($this->params);
-    }
-}
+'mailers' => [
+    'messagegears' => [
+        'transport' => 'messagegears',
+        'campaign_id' => env('MESSAGEGEARS_CAMPAIGN_ID'),
+    ],
+],
 ```
+
+Then send mail as usual:
+
+```php
+Mail::mailer('messagegears')->to('user@example.com')->send(new WelcomeEmail());
+```
+
+### TransactionalEmail Options
+
+The `TransactionalEmail` notification supports a full set of fluent options:
+
+```php
+TransactionalEmail::make()
+    ->campaignId('CAMPAIGN_ID')
+    ->campaignVersion('v2')
+    ->context(['SubjectLine' => 'Hello'])
+    ->category('marketing')
+    ->correlationId('corr-123')
+    ->latestSendTime('2030-01-01 12:00:00')
+    ->notificationEmailAddress('alerts@example.com')
+    ->fromAddress('noreply@example.com')
+    ->fromName('My App')
+    ->replyToAddress('support@example.com');
+```
+
+## Testing
+
+```bash
+composer test           # Run Pest tests
+composer lint           # Run Pint
+composer analyse        # Run PHPStan
+composer rector         # Run Rector (dry-run)
+```
+
+## License
+
+MIT

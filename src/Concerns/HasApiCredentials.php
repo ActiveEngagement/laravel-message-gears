@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Concerns;
 
 trait HasApiCredentials
@@ -21,6 +23,8 @@ trait HasApiCredentials
 
     /**
      * The request headers.
+     *
+     * @var array<string, string|null>
      */
     public array $headers = [];
 
@@ -56,8 +60,10 @@ trait HasApiCredentials
 
     /**
      * Set the configurations using an array.
+     *
+     * @param  array<string, mixed>  $config
      */
-    public function configure(array $config): self
+    public function configure(array $config): static
     {
         foreach ($config as $key => $value) {
             $this->$key($value);
@@ -67,10 +73,7 @@ trait HasApiCredentials
     }
 
     /**
-     * Set the `header` property.
-     *
-     * @param  array  $key
-     * @param  array|null  $value
+     * Set a single header.
      */
     public function header(string $key, ?string $value): self
     {
@@ -81,6 +84,8 @@ trait HasApiCredentials
 
     /**
      * Set the `headers` property.
+     *
+     * @param  array<string, string|null>  $headers
      */
     public function headers(array $headers): self
     {

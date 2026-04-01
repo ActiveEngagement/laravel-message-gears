@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Override;
 
 /**
  * @see \Actengage\MessageGears\Cloud
  */
 class Cloud extends Facade
 {
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    #[Override]
+    protected static function getFacadeAccessor(): string
     {
         return \Actengage\MessageGears\Cloud::class;
     }

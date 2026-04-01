@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Concerns;
 
 use Actengage\MessageGears\Context;
@@ -13,6 +15,8 @@ trait HasContext
 
     /**
      * Set the `context` property.
+     *
+     * @param  Context|array<string, mixed>  $context
      */
     public function context(Context|array $context): self
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use Actengage\MessageGears\Concerns\HasApiCredentials;
@@ -14,17 +16,13 @@ abstract class Api
 
     /**
      * The default API version.
-     *
-     * @var string
      */
-    public const VERSION = null;
+    public const ?string VERSION = null;
 
     /**
      * The version pattern.
-     *
-     * @var string
      */
-    public const VERSION_PATTERN = false;
+    public const string|false VERSION_PATTERN = false;
 
     /**
      * The Guzzle client.
@@ -34,7 +32,7 @@ abstract class Api
     /**
      * Create a new instance.
      */
-    public function __construct(string $accountId = null, string $apiKey = null)
+    public function __construct(?string $accountId = null, ?string $apiKey = null)
     {
         $this->accountId($accountId);
         $this->apiKey($apiKey);
@@ -43,19 +41,38 @@ abstract class Api
     /**
      * Call the method on the Guzzle client.
      *
-     * @param  string  $method
-     * @param  array  $args
-     * @return \GuzzleHttp\Psr7\Response
+     * @param  array<int, mixed>  $args
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args): Response
     {
+        /** @var array{0: array<int, string>|string, 1?: array<string, mixed>} $args */
         return $this->request($method, ...$args);
     }
 
     /**
-     * Set the `client` property.
+     * Send a POST request.
      *
-     * @param  string  $client
+     * @param  array<int, string>|string  $uri
+     * @param  array<string, mixed>  $options
+     */
+    public function post(array|string $uri, array $options = []): Response
+    {
+        return $this->request('post', $uri, $options);
+    }
+
+    /**
+     * Send a GET request.
+     *
+     * @param  array<int, string>|string  $uri
+     * @param  array<string, mixed>  $options
+     */
+    public function get(array|string $uri, array $options = []): Response
+    {
+        return $this->request('get', $uri, $options);
+    }
+
+    /**
+     * Set the `client` property.
      */
     public function client(Client $client): self
     {
@@ -80,7 +97,7 @@ abstract class Api
     /**
      * Mock a Guzzle client.
      *
-     * @param  array<\GuzzleHttp\Psr7\Request>  $requests
+     * @param  array<int, mixed>  $requests
      */
     public function mock(array $requests): self
     {
@@ -95,11 +112,15 @@ abstract class Api
 
     /**
      * Send an HTTP request.
+     *
+     * @param  array<int, string>|string  $uri
+     * @param  array<string, mixed>  $options
      */
     public function request(string $method, array|string $uri, array $options = []): Response
     {
         $client = $this->client ?? $this->createHttpClient();
 
+        /** @var Response */
         return $client->$method($this->uri($uri), array_merge_recursive($options, [
             'headers' => $this->headers,
         ]));
@@ -108,13 +129,19 @@ abstract class Api
     /**
      * Build a uri string
      *
-     * @param  array|string  ...$args
+     * @param  array<int, mixed>|string  ...$args
      */
-    public function uri(...$args): string
+    public function uri(mixed ...$args): string
     {
-        return $this->prependVersion(sprintf(
-            ...collect([...$args])->flatten()->values()
-        ));
+        $flatArgs = collect([...$args])->flatten()->values()->all();
+
+        /** @var string $format */
+        $format = array_shift($flatArgs);
+
+        /** @var array<int, bool|float|int|string|null> $sprintfArgs */
+        $sprintfArgs = $flatArgs;
+
+        return $this->prependVersion(sprintf($format, ...$sprintfArgs));
     }
 
     /**
@@ -124,7 +151,7 @@ abstract class Api
     {
         if (! static::VERSION_PATTERN
             || preg_match('/^\//', $uri)
-            || preg_match(static::VERSION_PATTERN, $this->baseUri)) {
+            || preg_match(static::VERSION_PATTERN, (string) $this->baseUri)) {
             return false;
         }
 
@@ -133,10 +160,8 @@ abstract class Api
 
     /**
      * Prepend the version.
-     *
-     * @return string
      */
-    public function prependVersion(string $uri)
+    public function prependVersion(string $uri): string
     {
         if (! $this->shouldPrependVersion($uri)) {
             return $uri;

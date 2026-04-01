@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use GuzzleHttp\Client;
+use Override;
 
 class Accelerator extends Api
 {
     /**
      * The default API version.
-     *
-     * @var string
      */
-    public const VERSION = 'beta';
+    public const string VERSION = 'beta';
 
     /**
      * The version pattern.
-     *
-     * @var string
      */
-    public const VERSION_PATTERN = '/beta\//';
+    public const string VERSION_PATTERN = '/beta\//';
 
     /**
      * The MessageGears endpoint base URI.
@@ -28,6 +27,7 @@ class Accelerator extends Api
     /**
      * Create a new HTTP client.
      */
+    #[Override]
     public function createHttpClient(): Client
     {
         return new Client([

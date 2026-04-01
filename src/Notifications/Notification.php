@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Notifications;
 
 use Actengage\MessageGears\Concerns\HasApiCredentials;
@@ -8,29 +10,36 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification as BaseNotification;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class Notification extends BaseNotification implements ShouldQueue
 {
-    use HasApiCredentials, Queueable;
+    use HasApiCredentials;
+    use Queueable;
 
     /**
      * Retrieve the recipient from the notifiable.
-     *
-     * @param  mixed  $notifiable
      */
-    public function recipient($notifiable): Recipient
+    public function recipient(object $notifiable): Recipient
     {
-        $email = $notifiable->routeNotificationFor('message_gears', $this);
+        $email = null;
 
-        return (new Recipient())->email($email ?: $notifiable->email);
+        if (method_exists($notifiable, 'routeNotificationFor')) {
+            $email = $notifiable->routeNotificationFor('message_gears', $this);
+        }
+
+        if (! is_string($email) && isset($notifiable->email)) {
+            $email = $notifiable->email;
+        }
+
+        return (new Recipient)->email(is_string($email) ? $email : '');
     }
 
     /**
      * Send the notification.
-     *
-     * @param  object  $notifiable
-     * @return void
      */
-    abstract public function send($notifiable);
+    abstract public function send(object $notifiable): void;
 
     /**
      * Get the endpoint URI for the notification.
@@ -42,6 +51,6 @@ abstract class Notification extends BaseNotification implements ShouldQueue
      */
     public static function make(): static
     {
-        return new static();
+        return new static;
     }
 }
