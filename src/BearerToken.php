@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Date;
+use Stringable;
 
-class BearerToken
+class BearerToken implements Stringable
 {
     /**
      * The bearer expiration.
@@ -20,14 +24,17 @@ class BearerToken
     /**
      * Create a new instance.
      */
-    public function __construct(Response|string $token, Carbon $expirationDate = null)
+    public function __construct(Response|string $token, ?Carbon $expirationDate = null)
     {
         if ($token instanceof Response) {
-            extract(json_decode($token->getBody(), true));
+            /** @var array{token: string, expirationDate: string} $data */
+            $data = json_decode((string) $token->getBody(), true);
+            $token = $data['token'];
+            $expirationDate = Date::parse($data['expirationDate']);
         }
 
         $this->token = $token;
-        $this->expirationDate = Carbon::parse($expirationDate, 'utc')->subSeconds(30);
+        $this->expirationDate = Date::parse($expirationDate, 'utc')->subSeconds(30);
     }
 
     /**
@@ -56,12 +63,9 @@ class BearerToken
 
     /**
      * Create a bearer token instance from a GuzzleResponse.
-     *
-     * @param \GuzzleHttp\Psr7\Response
-     * @return \Actengage\MessageGears\BearerToken
      */
-    public static function response(Response $response)
+    public static function response(Response $response): self
     {
-        return new BearerToken($response);
+        return new self($response);
     }
 }

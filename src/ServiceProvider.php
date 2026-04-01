@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use Illuminate\Support\Arr;
@@ -9,20 +11,16 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerCloudApi();
         $this->registerAcceleratorApi();
@@ -30,11 +28,20 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         Mail::extend('messagegears', function (array $config = []) {
             if (Arr::has($config, 'resolver')) {
-                return (new $config['resolver'])($this->app, $config);
+                /** @var class-string $resolverClass */
+                $resolverClass = $config['resolver'];
+                $resolver = new $resolverClass;
+
+                if (is_callable($resolver)) {
+                    return $resolver($this->app, $config);
+                }
             }
 
+            /** @var string $campaignId */
+            $campaignId = Arr::get($config, 'campaign_id', '');
+
             return new MessageGearsTransport(
-                $this->app->get(Cloud::class), Arr::get($config, 'campaign_id')
+                $this->app->get(Cloud::class), $campaignId
             );
         });
     }
@@ -44,10 +51,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function registerCloudApi(): void
     {
-        $this->app->singleton(Cloud::class, function () {
-            return (new Cloud())->configure(array_filter(
-                config('services.messagegears.cloud') ?? []
-            ));
+        $this->app->singleton(function (): Cloud {
+            /** @var array<string, mixed> $cloudConfig */
+            $cloudConfig = config('services.messagegears.cloud', []);
+
+            return (new Cloud)->configure(array_filter($cloudConfig));
         });
 
         $this->app->alias(Cloud::class, 'mg.api.cloud');
@@ -58,10 +66,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function registerAcceleratorApi(): void
     {
-        $this->app->singleton(Accelerator::class, function () {
-            return (new Accelerator())->configure(array_filter(
-                config('services.messagegears.accelerator') ?? []
-            ));
+        $this->app->singleton(function (): Accelerator {
+            /** @var array<string, mixed> $acceleratorConfig */
+            $acceleratorConfig = config('services.messagegears.accelerator', []);
+
+            return (new Accelerator)->configure(array_filter($acceleratorConfig));
         });
 
         $this->app->alias(Accelerator::class, 'mg.api.accelerator');
@@ -72,9 +81,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function registerMessageGearsTransport(): void
     {
-        $this->app->singleton(MessageGearsTransport::class, function () {
+        $this->app->singleton(function (): MessageGearsTransport {
+            /** @var string $campaignId */
+            $campaignId = config('services.messagegears.campaign_id', '');
+
             return new MessageGearsTransport(
-                $this->app->get(Accelerator::class)
+                $this->app->get(Cloud::class),
+                $campaignId
             );
         });
     }

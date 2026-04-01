@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears;
 
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * @implements Arrayable<string, string>
+ */
 class Recipient implements Arrayable
 {
     /**
      * The email address.
-     *
-     * @var string
      */
-    public $email;
+    public ?string $email = null;
 
     /**
      * The id of the recipient.
-     *
-     * @var string
      */
-    public $recipientId;
+    public ?string $recipientId = null;
 
     /**
      * Set the `email` property.
@@ -43,9 +44,9 @@ class Recipient implements Arrayable
     /**
      * Convert the instance to an array.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'EmailAddress' => $this->email,

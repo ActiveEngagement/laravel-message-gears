@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Actengage\MessageGears\Notifications;
 
 use Actengage\MessageGears\Concerns\HasCampaign;
@@ -9,37 +11,33 @@ use Actengage\MessageGears\Context;
 use Actengage\MessageGears\Facades\Cloud;
 use Actengage\MessageGears\MessageGearsChannel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use InvalidArgumentException;
+use Override;
 
 class TransactionalEmail extends Notification
 {
-    use HasCampaign, HasContext, HasSender;
+    use HasCampaign;
+    use HasContext;
+    use HasSender;
 
     /**
      * The category.
-     *
-     * @var string
      */
     public ?string $category = null;
 
     /**
      * The correlation id.
-     *
-     * @var string
      */
     public ?string $correlationId = null;
 
     /**
      * The latest send time.
-     *
-     * @var \Carbon\Carbon
      */
     public ?Carbon $latestSendTime = null;
 
     /**
      * An email address which will receive notifications on job errors.
-     *
-     * @var string
      */
     public ?string $notificationEmailAddress = null;
 
@@ -77,15 +75,13 @@ class TransactionalEmail extends Notification
      */
     public function latestSendTime(Carbon|string $latestSendTime): self
     {
-        $this->latestSendTime = Carbon::make($latestSendTime);
+        $this->latestSendTime = Date::make($latestSendTime);
 
         return $this;
     }
 
     /**
      * Set the `notificationEmailAddress` property.
-     *
-     * @param  Carbon  $notificationEmailAddress
      */
     public function notificationEmailAddress(string $notificationEmailAddress): self
     {
@@ -97,10 +93,9 @@ class TransactionalEmail extends Notification
     /**
      * Get the notification channels.
      *
-     * @param  mixed  $notifiable
-     * @return array|string
+     * @return class-string<MessageGearsChannel>
      */
-    public function via($notifiable)
+    public function via(mixed $notifiable): string
     {
         return MessageGearsChannel::class;
     }
@@ -108,6 +103,7 @@ class TransactionalEmail extends Notification
     /**
      * Get the endpoint URI for the notification.
      */
+    #[Override]
     public function uri(): string
     {
         return Cloud::uri('v5.1/campaign/transactional/%s', $this->campaignId);
@@ -115,17 +111,11 @@ class TransactionalEmail extends Notification
 
     /**
      * Send the notification.
-     *
-     * @param  object  $notifiable
-     * @return void
      */
-    public function send($notifiable)
+    #[Override]
+    public function send(object $notifiable): void
     {
-        if (! isset($this->campaignId)) {
-            throw new InvalidArgumentException(
-                'The campaign ID is required to send transactional emails.'
-            );
-        }
+        throw_unless(isset($this->campaignId), InvalidArgumentException::class, 'The campaign ID is required to send transactional emails.');
 
         Cloud::authenticate()->post($this->uri(), [
             'headers' => $this->headers,
@@ -139,10 +129,10 @@ class TransactionalEmail extends Notification
                     'notificationEmailAddress' => $this->notificationEmailAddress,
                 ]),
                 'context' => (
-                    !empty($data = $this->context->toArray()) ? [
+                    ($data = $this->context->toArray()) === [] ? [] : [
                         'data' => $data,
-                        'format' => 'JSON'
-                    ] : []
+                        'format' => 'JSON',
+                    ]
                 ),
                 'recipient' => [
                     'data' => $this->recipient($notifiable)->toArray(),

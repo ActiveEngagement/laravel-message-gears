@@ -1,0 +1,8 @@
+{
+    "name": "laravel-message-gears",
+    "version": "3.0.0",
+    "private": true,
+    "devDependencies": {
+        "@changesets/cli": "^2.27.0"
+    }
+}
