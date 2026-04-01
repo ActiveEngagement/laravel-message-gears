@@ -6,12 +6,14 @@ namespace Actengage\MessageGears;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
+use Override;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void
     {
         //
