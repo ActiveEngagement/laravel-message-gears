@@ -1,5 +1,11 @@
 # laravel-message-gears
 
+## 4.0.1
+
+### Patch Changes
+
+- 0836f4f: Widen type hints to `CarbonInterface` for date properties so the package works in apps that use `Carbon` and `CarbonImmutable`
+
 ## 4.0.0
 
 ### Major Changes
