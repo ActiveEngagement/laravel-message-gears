@@ -10,7 +10,7 @@ use Actengage\MessageGears\Concerns\HasSender;
 use Actengage\MessageGears\Context;
 use Actengage\MessageGears\Facades\Cloud;
 use Actengage\MessageGears\MessageGearsChannel;
-use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Date;
 use InvalidArgumentException;
 use Override;
@@ -34,7 +34,7 @@ class TransactionalEmail extends Notification
     /**
      * The latest send time.
      */
-    public ?Carbon $latestSendTime = null;
+    public ?CarbonInterface $latestSendTime = null;
 
     /**
      * An email address which will receive notifications on job errors.
@@ -73,7 +73,7 @@ class TransactionalEmail extends Notification
     /**
      * Set the `latestSendTime` property.
      */
-    public function latestSendTime(Carbon|string $latestSendTime): self
+    public function latestSendTime(CarbonInterface|string $latestSendTime): self
     {
         $this->latestSendTime = Date::make($latestSendTime);
 
